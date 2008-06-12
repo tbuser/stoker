@@ -14,3 +14,21 @@ stoker.blowers.each do |blower|
   puts "#{blower.serial_number}: #{blower.name}"
 end
 
+# ideas:
+
+# stoker.sensor("meat").low = 180
+# stoker.sensor("meat").high = 220
+# stoker.sensor("meat").target = 200
+# stoker.sensor("meat").alarm = "food"
+
+# stoker.blower("main").control("meat")
+
+# puts stoker.meat_sensor.temp
+
+# stoker.blower("main").on
+# stoker.blower("main").off
+# stoker.blower("main").on?
+
+# stoker.monitor(:frequency => 60) do |event|
+#   puts "#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}: #{event.name} - #{event.temp}"
+# end
