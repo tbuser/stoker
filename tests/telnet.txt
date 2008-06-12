@@ -1,4 +1,28 @@
-9C00001195DEE430: 3 25.8 78.3 -10 0.3 1 0.8 22.6 72.6 
-0E0000112A5D1630: 0 26.5 79.7 -13.8 0.3 1.1 0.7 18 64.3 
-530000112A584E30: 0 27 80.6 -13.1 0.3 1.1 0.8 18.8 65.9 
-440000112A621E30: 0 26.9 80.4 23.8 0.6 1.1 1.7 41.4 106.5 PID: NORM tgt:232.2 temp below low threshold
+0E0000112A5D1630: 0 25.4 77.7 -6.9 0.2 1 0.8 21.1 70 
+530000112A584E30: 0 25.1 77.2 -5.6 0.2 1 0.9 21.6 70.9 
+440000112A621E30: 0 26 78.8 -8.1 0.2 1 0.8 21 69.8 
+9C00001195DEE430: 3 24 75.2 -5.6 0.2 1 0.8 23.5 74.3 PID: NORM tgt:82.2 temp below low threshold
+9C00001195DEE430: 3 24.3 24.3 -6.9 0.2 1 0.8 23 23 PID: NORM tgt:20 error:-15 drive:-42.7 istate:-7.9 off due to overshoot
+
+serial_number:
+calibration_celsius (subtract this from current_celsius to find actual celsius)
+?_celsius
+?_fahrenheit (shows fahrenheit only if stoker set to fahrenheit, otherwise it's celsius)
+? (if fire probe, this is the distance in degrees from target?)
+?
+?
+?
+current_celsius (see: calibration_celsius)
+current_fahrenheit (see: calibration_celsius, shows fahrenheit only if stoker set to fahrenheit, otherwise it's celsius)
+
+(if fan is controlling this sensor)
+
+"PID:"
+"NORM"
+"tgt:"target_fahrenheit (celsius?)
+("error:"?) (has something to do with positive number if above target, negative if below)
+("drive:"?)
+("istate:"time_in_state) (minutes, starts out positive until it hits 1 then adds a negative sign -)
+("on:"percent_of_time_fan_on) (on+off always equals 10, unless its 100% on in that case its on:1 off:0)
+("off:"percent_of_time_fan_off)
+status_message

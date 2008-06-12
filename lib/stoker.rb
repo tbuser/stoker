@@ -37,25 +37,29 @@ class Stoker
   end
   
   def find_sensors(html = nil)
-    @sensors  = []
-    @blowers  = []
-    doing     = ""
+    @sensors    = []
+    @blowers    = []
+    type        = ""
+    processing  = nil
+    get_next    = 0
+    doing_cell  = 0
+    on_header   = false
     
     doc = Hpricot(html || open("http://#{@host}:#{@http_port}"))
 
-    (doc/"td.ser_num").each do |td|
-      ["Blower", "Temp Sensor"].each do |which|
-        doing = which if td.to_s.include?(which)
-      end
-      
-      unless td.inner_html.include?("<b>")
-        
-        case doing
-        when "Blower"
-          @blowers << Blower.new(@stoker, td.inner_html)
-        when "Temp Sensor"
-          @sensors << Sensor.new(@stoker, td.inner_html)
-        end
+    # (doc/"td.ser_num/..").each do |row|
+    # (doc/"td.ser_num/b[text() = 'Blower']:first/../..").each do |row|
+    (doc/"td.ser_num/b[text() = 'Temp Sensor']:first/../../../tr").each do |row|
+      unless (row/"td:first/b").size > 0
+        puts "--------------"
+        puts row.at("td[1]").inner_html
+        puts row.at("td[2]/input")['value'].strip
+        puts row.at("td[3]").inner_html
+        puts row.at("td[4]/input")['value'].strip
+        puts row.at("td[5]/select").inspect
+        puts row.at("td[6]/input")['value'].strip
+        puts row.at("td[7]/input")['value'].strip
+        puts row.at("td[8]/select").inspect
       end
     end
   end
