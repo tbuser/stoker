@@ -16,10 +16,14 @@ end
 
 # ideas:
 
+# stoker.sensor("440000112A621E30").name = "meat"
+
 # stoker.sensor("meat").low = 180
 # stoker.sensor("meat").high = 220
 # stoker.sensor("meat").target = 200
 # stoker.sensor("meat").alarm = "food"
+
+# stoker.blower("140000002AA65105").name = "main"
 
 # stoker.blower("main").control("meat")
 
