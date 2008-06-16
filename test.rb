@@ -3,15 +3,16 @@
 require "lib/stoker"
 
 stoker = Stoker.new("10.1.1.8", :html => File.open("tests/test1.html"))
+# stoker = Stoker.new("10.1.1.8")
 
 puts "Listing blowers:"
 stoker.blowers.each do |blower|
-  puts "#{blower.serial_number}, #{blower.name}"
+  puts "#{blower.serial_number}, #{blower.name}, #{blower.sensor.name rescue ''}"
 end
 
 puts "Listing sensors:"
 stoker.sensors.each do |sensor|
-  puts "#{sensor.serial_number}, #{sensor.name}, #{sensor.temp}"
+  puts "#{sensor.serial_number}, #{sensor.name}, #{sensor.temp}, #{sensor.target}, #{sensor.alarm}, #{sensor.low}, #{sensor.high}, #{sensor.blower.name rescue ''}"
 end
 
 # ideas:
