@@ -1,9 +1,13 @@
 #!/usr/bin/env ruby
+# TODO: make this into a proper testing framework  :)
+
+TEST = false
+TEST_HTML = File.open("tests/test1.html")
+TEST_TELNET = File.open("tests/telnet.txt")
 
 require "lib/stoker"
 
-stoker = Stoker.new("10.1.1.8", :html => File.open("tests/test1.html"))
-# stoker = Stoker.new("10.1.1.8")
+stoker = Stoker.new("10.1.1.8")
 
 puts "Listing blowers:"
 stoker.blowers.each do |blower|
@@ -15,6 +19,16 @@ stoker.sensors.each do |sensor|
   puts "#{sensor.serial_number}, #{sensor.name}, #{sensor.temp}, #{sensor.target}, #{sensor.alarm}, #{sensor.low}, #{sensor.high}, #{sensor.blower.name rescue ''}"
 end
 
+puts "Red: #{stoker.sensor("Red").temp}"
+puts "9C00001195DEE430: #{stoker.sensor("9C00001195DEE430").name}"
+
+puts "Fan Sensor: #{stoker.blower("Fan").sensor.name}"
+puts "140000002AA65105: #{stoker.blower("140000002AA65105").name}"
+
+puts "Red Blower: #{stoker.sensor("pit temp").blower.name}"
+
+stoker.sensor("Red").name = "Rouge"
+
 # ideas:
 
 # stoker.sensor("440000112A621E30").name = "meat"
@@ -25,8 +39,6 @@ end
 # stoker.sensor("meat").target = 200
 
 # stoker.blower("140000002AA65105").name = "main"
-
-# stoker.blower("main").control("meat")
 
 # puts stoker.meat_sensor.temp
 

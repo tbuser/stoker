@@ -3,9 +3,10 @@
 require "rubygems"
 require "hpricot"
 require "net/http"
+require "cgi"
 require "open-uri"
 require "net/telnet"
-# include Net
+include Net
 
 class Stoker
   attr_accessor :host, :user, :pass, :http_port, :telnet_port
@@ -24,10 +25,10 @@ class Stoker
     @sensors      = []
     @blowers      = []
     
-    find_sensors(options[:html])
+    read_sensors
   end
   
-  def connect(txt = nil)
+  def connect
     @telnet = Net::Telnet.new("Host" => @host, "Port" => @telnet_port)
     @telnet.login(@user, @pass)
     # bbq -k
@@ -39,9 +40,10 @@ class Stoker
     @telnet.close
   end
   
-  def find_sensors(html = nil, attempt = 1)
+  def read_sensors(attempt = 1)
     @sensors    = []
     @blowers    = []
+    html        = TEST_HTML if TEST
     html      ||= open("http://#{@host}:#{@http_port}")
     contents    = html.read
     
@@ -81,7 +83,7 @@ class Stoker
         @sensors[for_sensor].alarm = Stoker::ALARMS[val.to_i]
         count += 1
       when 1
-        @sensors[for_sensor].blower = val.gsub(/\"/,'')
+        @sensors[for_sensor].blower = val.gsub(/\"/,'') unless val == '""'
         count = 0
         for_sensor += 1
       end
@@ -92,8 +94,36 @@ class Stoker
       raise "Web page output corrupt.  Tried too many times, giving up."
     else
       attempt += 1
-      puts "Warning: Web page output corrupt.  Retrying... attempt #{attempt}"
-      find_sensors(html, attempt)
+      warn "Warning: Web page output corrupt.  Retrying... attempt #{attempt}"
+      read_sensors(attempt)
+    end
+  end
+
+  def sensor(str)
+    str = str.downcase
+    @sensors.find{|s| s.name.downcase == str or s.serial_number.downcase == str}
+  end
+
+  def blower(str)
+    str = str.downcase
+    @blowers.find{|b| b.name.downcase == str or b.serial_number.downcase == str}
+  end
+  
+  def post(params = {})
+    post_url = "http://#{@host}:#{@http_port}/stoker.Post_Handler"
+    
+    queries = []
+    
+    params.each do |k,v|
+      queries << "#{k}=#{CGI::escape(v)}"
+    end
+    
+    q = queries.join("&")
+
+    if TEST
+      warn "#{post_url}?#{q}"
+    else
+      response = HTTP.post_form URI.parse(post_url), {"q" => q}
     end
   end
 end
@@ -102,6 +132,15 @@ class Sensor
   attr_accessor :name, :serial_number, :temp, :target, :alarm, :low, :high, :blower
 
   attr_reader :stoker
+
+  FORM_PREFIXES = {
+    "name"    => "n1",
+    "alarm"   => "al",
+    "target"  => "ta",
+    "high"    => "th",
+    "low"     => "tl",
+    "blower"  => "sw"
+  }
   
   def initialize(stoker, serial_number, name = nil)
     @stoker         = stoker
@@ -111,12 +150,19 @@ class Sensor
   
   def name=(str)
     @name = str
-    # TODO: update stoker
+    @stoker.post(self.form_variable("name") => str)
   end
   
   def blower=(blower_serial_number)
-    @blower = @stoker.blowers.find{|b| b.serial_number == blower_serial_number}
-    # TODO: update stoker
+    if @blower = @stoker.blowers.find{|b| b.serial_number.downcase == blower_serial_number.downcase}
+      # TODO: update stoker
+    else
+      raise "Blower not found"
+    end
+  end
+  
+  def form_variable(type)
+    "#{FORM_PREFIXES[type]}#{self.serial_number}"
   end
 end
 
@@ -136,8 +182,16 @@ class Blower
     # TODO: update stoker
   end
   
+  def sensor=(sensor_serial_number)
+    if sensor = @stoker.sensors.find{|s| s.serial_number.downcase == sensor_serial_number}
+      sensor.blower = self.serial_number
+    else
+      raise "Sensor not found"
+    end
+  end
+  
   def sensor
-    stoker.sensors.find{|s| s.blower.serial_number == self.serial_number}
+    @stoker.sensors.find{|s| s.blower.serial_number.downcase == self.serial_number.downcase}
   end
 end
 
