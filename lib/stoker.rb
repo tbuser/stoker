@@ -7,12 +7,11 @@ require "cgi"
 require "open-uri"
 require "net/telnet"
 
+require File.join(File.dirname(__FILE__), 'sensor')
+require File.join(File.dirname(__FILE__), 'blower')
+
 module Net
   class Stoker
-    
-    require File.join(File.dirname(__FILE__), 'sensor')
-    require File.join(File.dirname(__FILE__), 'blower')
-  
     attr_accessor :host, :user, :pass, :http_port, :telnet_port
   
     attr_reader :telnet, :sensors, :blowers, :sensor_opts, :blower_opts
@@ -86,7 +85,7 @@ module Net
       blower_alarm_string.split(",").each do |val|
         case count
         when 0
-          @sensor_opts[for_sensor][:alarm] = Stoker::ALARMS[val.to_i]
+          @sensor_opts[for_sensor][:alarm] = Net::Stoker::ALARMS[val.to_i]
           count += 1
         when 1
           @sensor_opts[for_sensor][:blower_serial_number] = val.gsub(/\"/,'') unless val == '""'
@@ -106,11 +105,11 @@ module Net
       end
 
       @sensor_opts.each do |s|
-        @sensors << Sensor.new(self, s)
+        @sensors << Net::Sensor.new(self, s)
       end
 
       @blower_opts.each do |b|
-        @blowers << Blower.new(self, b)
+        @blowers << Net::Blower.new(self, b)
       end
 
     rescue Net::HTTPBadResponse
