@@ -11,7 +11,7 @@ include Net
 class Stoker
   attr_accessor :host, :user, :pass, :http_port, :telnet_port
   
-  attr_reader :telnet, :sensors, :blowers
+  attr_reader :telnet, :sensors, :blowers, :sensor_opts, :blower_opts
   
   ALARMS = ["None", "Food", "Fire"]
   
@@ -46,31 +46,33 @@ class Stoker
     html        = TEST_HTML if TEST
     html      ||= open("http://#{@host}:#{@http_port}")
     contents    = html.read
+    @sensor_opts = []
+    @blower_opts = []
     
     doc = Hpricot(contents)
 
     (doc/"td.ser_num/b[text() = 'Blower']:first/../../../tr").each do |row|
       unless (row/"td:first/b").size > 0
-        blower      = Blower.new(self, row.at("td[1]").inner_html)
-        blower.name = row.at("td[2]/input")['value'].strip
-        @blowers << blower
+        @blower_opts << {
+          :serial_number  => row.at("td[1]").inner_html,
+          :name           => row.at("td[2]/input")['value'].strip
+        }
       end
     end
     
     (doc/"td.ser_num/b[text() = 'Temp Sensor']:first/../../../tr").each do |row|
       unless (row/"td:first/b").size > 0
-        sensor        = Sensor.new(self, row.at("td[1]").inner_html)
-        sensor.name   = row.at("td[2]/input")['value'].strip
-        sensor.temp   = row.at("td[3]").inner_html
-        sensor.target = row.at("td[4]/input")['value'].strip
-        # sensor.alarm  = row.at("td[5]/select/option[@selected='selected']").inner_html rescue "None"
-        sensor.low    = row.at("td[6]/input")['value'].strip
-        sensor.high   = row.at("td[7]/input")['value'].strip
-        # sensor.blower = row.at("td[8]/select/option[@selected='selected']").inner_html rescue "None"
-        @sensors << sensor
+        @sensor_opts << {
+          :serial_number  => row.at("td[1]").inner_html,
+          :name           => row.at("td[2]/input")['value'].strip,
+          :temp           => row.at("td[3]").inner_html,
+          :target         => row.at("td[4]/input")['value'].strip,
+          :low            => row.at("td[6]/input")['value'].strip,
+          :high           => row.at("td[7]/input")['value'].strip
+        }
       end
     end
-    
+
     if contents =~ /sel = \[(.*)\];$/
       blower_alarm_string = $1
     end
@@ -80,15 +82,33 @@ class Stoker
     blower_alarm_string.split(",").each do |val|
       case count
       when 0
-        @sensors[for_sensor].alarm = Stoker::ALARMS[val.to_i]
+        @sensor_opts[for_sensor][:alarm] = Stoker::ALARMS[val.to_i]
         count += 1
       when 1
-        @sensors[for_sensor].blower = val.gsub(/\"/,'') unless val == '""'
+        @sensor_opts[for_sensor][:blower_serial_number] = val.gsub(/\"/,'') unless val == '""'
         count = 0
         for_sensor += 1
       end
     end
-    
+
+    @sensor_opts.each do |s|
+      if s[:blower_serial_number].to_s != ""
+        @blower_opts.each do |b|
+          if b[:serial_number] == s[:blower_serial_number]
+            b[:sensor_serial_number] = s[:serial_number]
+          end
+        end
+      end
+    end
+
+    @sensor_opts.each do |s|
+      @sensors << Sensor.new(self, s)
+    end
+
+    @blower_opts.each do |b|
+      @blowers << Blower.new(self, b)
+    end
+
   rescue Net::HTTPBadResponse
     if attempt > 4
       raise "Web page output corrupt.  Tried too many times, giving up."
@@ -113,23 +133,36 @@ class Stoker
     post_url = "http://#{@host}:#{@http_port}/stoker.Post_Handler"
     
     queries = []
-    
-    params.each do |k,v|
-      queries << "#{k}=#{CGI::escape(v)}"
-    end
-    
-    q = queries.join("&")
 
     if TEST
+      params.each do |k,v|
+        queries << "#{k}=#{CGI::escape(v)}"
+      end
+
+      q = queries.join("&")
+
       warn "#{post_url}?#{q}"
     else
-      response = HTTP.post_form URI.parse(post_url), {"q" => q}
+      # stoker http doesn't like keep alive, so have to do post request the long way
+      # res = HTTP.post_form(URI.parse(post_url), params)
+      url = URI.parse(post_url)
+      req = HTTP::Post.new(url.path)
+      req["Keep-Alive"] = false
+      req.set_form_data(params)
+      res = HTTP.new(url.host, url.port).start {|http| http.request(req) }
+      case res
+      when Net::HTTPSuccess, Net::HTTPRedirection
+        # OK
+        true
+      else
+        res.error!
+      end
     end
   end
 end
 
 class Sensor
-  attr_accessor :name, :serial_number, :temp, :target, :alarm, :low, :high, :blower
+  attr_accessor :name, :serial_number, :temp, :target, :alarm, :low, :high, :blower_serial_number, :blower
 
   attr_reader :stoker
 
@@ -142,23 +175,33 @@ class Sensor
     "blower"  => "sw"
   }
   
-  def initialize(stoker, serial_number, name = nil)
+  def initialize(stoker, options = {})
     @stoker         = stoker
-    @serial_number  = serial_number
-    @name           = name || serial_number
+    options.each do |k,v|
+      eval("@#{k} = options[:#{k}]")
+    end
   end
   
   def name=(str)
     @name = str
     @stoker.post(self.form_variable("name") => str)
   end
-  
-  def blower=(blower_serial_number)
-    if @blower = @stoker.blowers.find{|b| b.serial_number.downcase == blower_serial_number.downcase}
+
+  def blower_serial_number=(str)
+    if @blower_serial_number = @stoker.blower(str)
       # TODO: update stoker
     else
       raise "Blower not found"
     end
+  end
+  
+  def blower=(b)
+    @blower_serial_number = b.serial_number
+    # TODO: update stoker
+  end
+  
+  def blower
+    @stoker.blower(self.blower_serial_number)
   end
   
   def form_variable(type)
@@ -167,14 +210,15 @@ class Sensor
 end
 
 class Blower
-  attr_accessor :name, :serial_number
+  attr_accessor :name, :serial_number, :sensor_serial_number, :sensor
 
   attr_reader :stoker
   
-  def initialize(stoker, serial_number, name = nil)
+  def initialize(stoker, options = {})
     @stoker         = stoker
-    @serial_number  = serial_number
-    @name           = name || serial_number
+    options.each do |k,v|
+      eval("@#{k} = options[:#{k}]")
+    end
   end
   
   def name=(str)
@@ -182,16 +226,22 @@ class Blower
     # TODO: update stoker
   end
   
-  def sensor=(sensor_serial_number)
-    if sensor = @stoker.sensors.find{|s| s.serial_number.downcase == sensor_serial_number}
-      sensor.blower = self.serial_number
+  def sensor_serial_number=(str)
+    if @sensor_serial_number = @stoker.sensor(str)
+      self.sensor.blower = self
+      # setting sensor blower will cause an update of stoker
     else
       raise "Sensor not found"
     end
   end
   
+  def sensor=(s)
+    @sensor_serial_number = s.serial_number
+    self.sensor.blower = self
+    # setting sensor blower will cause an update of stoker
+  end
+  
   def sensor
-    @stoker.sensors.find{|s| s.blower.serial_number.downcase == self.serial_number.downcase}
+    @stoker.sensor(self.sensor_serial_number)
   end
 end
-

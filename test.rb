@@ -21,11 +21,10 @@ end
 
 puts "Red: #{stoker.sensor("Red").temp}"
 puts "9C00001195DEE430: #{stoker.sensor("9C00001195DEE430").name}"
+puts "Pit Temp Blower: #{stoker.sensor("pit temp").blower.name}"
 
 puts "Fan Sensor: #{stoker.blower("Fan").sensor.name}"
 puts "140000002AA65105: #{stoker.blower("140000002AA65105").name}"
-
-puts "Red Blower: #{stoker.sensor("pit temp").blower.name}"
 
 stoker.sensor("Red").name = "Rouge"
 
