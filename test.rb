@@ -29,6 +29,20 @@ puts "140000002AA65105: #{stoker.blower("140000002AA65105").name}"
 # stoker.sensor("Red").name = "Rouge"
 # stoker.blower("Fan").name = "Blower"
 
+# stoker.sensor("Pit Temp").target = 42
+# stoker.sensor("Pit Temp").alarm = "none"
+
+# stoker.sensor("Pit Temp").target = 100
+# stoker.sensor("Pit Temp").alarm = "fire"
+# stoker.sensor("Pit Temp").low = 90
+# stoker.sensor("Pit Temp").high = 110
+
+stoker.sensor("Red").blower = stoker.blower("Fan")
+
+puts stoker.sensor("Pit Temp").blower_serial_number
+puts stoker.sensor("Red").blower_serial_number
+puts stoker.blower("Fan").sensor.name
+
 # ideas:
 
 # stoker.sensor("440000112A621E30").name = "meat"
