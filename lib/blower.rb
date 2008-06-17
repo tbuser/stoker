@@ -20,7 +20,7 @@ class Blower
   end
   
   def sensor_serial_number=(str)
-    if @sensor_serial_number = @stoker.sensor(str)
+    if @sensor_serial_number = @stoker.sensor(str).serial_number
       @stoker.blowers.each do |b|
         if b.sensor_serial_number == @sensor_serial_number
           s.change_without_update("blower_serial_number", nil) unless b == self
@@ -34,14 +34,7 @@ class Blower
   end
   
   def sensor=(s)
-    @sensor_serial_number = s.serial_number
-    @stoker.blowers.each do |b|
-      if b.sensor_serial_number == @sensor_serial_number
-        s.change_without_update("blower_serial_number", nil) unless b == self
-      end
-    end
-    self.sensor.blower = self
-    # setting sensor blower will cause an update of stoker
+    self.sensor_serial_number = s.serial_number
   end
   
   def sensor

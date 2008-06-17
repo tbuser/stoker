@@ -61,7 +61,7 @@ class Sensor
   end
 
   def blower_serial_number=(str)
-    if @blower_serial_number = @stoker.blower(str)
+    if @blower_serial_number = @stoker.blower(str).serial_number
       self.blower.change_without_update("sensor_serial_number", @serial_number)
       @stoker.sensors.each do |s|
         if s.blower_serial_number == @blower_serial_number
@@ -75,14 +75,7 @@ class Sensor
   end
   
   def blower=(b)
-    @blower_serial_number = b.serial_number
-    self.blower.change_without_update("sensor_serial_number", @serial_number)
-    @stoker.sensors.each do |s|
-      if s.blower_serial_number == @blower_serial_number
-        s.change_without_update("blower_serial_number", nil) unless s == self
-      end
-    end
-    @stoker.post(self.form_variable("blower") => @blower_serial_number)
+    self.blower_serial_number = b.serial_number
   end
   
   def blower

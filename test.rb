@@ -26,7 +26,7 @@ puts "Pit Temp Blower: #{stoker.sensor("pit temp").blower.name}"
 puts "Fan Sensor: #{stoker.blower("Fan").sensor.name}"
 puts "140000002AA65105: #{stoker.blower("140000002AA65105").name}"
 
-# stoker.sensor("Red").name = "Rouge"
+stoker.sensor("Red").name = "Rouge"
 # stoker.blower("Fan").name = "Blower"
 
 # stoker.sensor("Pit Temp").target = 42
@@ -37,22 +37,23 @@ puts "140000002AA65105: #{stoker.blower("140000002AA65105").name}"
 # stoker.sensor("Pit Temp").low = 90
 # stoker.sensor("Pit Temp").high = 110
 
+# puts
+# 
 # stoker.sensor("Red").blower = stoker.blower("Fan")
-
-puts stoker.sensor("Pit Temp").blower_serial_number
-puts stoker.sensor("Red").blower_serial_number
-puts stoker.blower("Fan").sensor.name
+# 
+# puts stoker.sensor("Pit Temp").blower_serial_number
+# puts stoker.sensor("Red").blower_serial_number
+# puts stoker.blower("Fan").sensor.name
+# 
+# puts
+# 
+# stoker.blower("Fan").sensor = stoker.sensor("Pit Temp")
+# 
+# puts stoker.sensor("Pit Temp").blower_serial_number
+# puts stoker.sensor("Red").blower_serial_number
+# puts stoker.blower("Fan").sensor.name
 
 # ideas:
-
-# stoker.sensor("440000112A621E30").name = "meat"
-
-# stoker.sensor("meat").alarm = "food"
-# stoker.sensor("meat").low = 180 # => low and high is ignored if alarm = food, only used with fire
-# stoker.sensor("meat").high = 220 # => low and high is ignored if alarm = food, only used with fire
-# stoker.sensor("meat").target = 200
-
-# stoker.blower("140000002AA65105").name = "main"
 
 # puts stoker.meat_sensor.temp
 

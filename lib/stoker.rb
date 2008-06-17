@@ -157,7 +157,7 @@ class Stoker
       res = HTTP.new(url.host, url.port).start {|http| http.request(req) }
       case res
       when Net::HTTPSuccess, Net::HTTPRedirection
-        # OK
+        # puts res.body
         true
       else
         res.error!
