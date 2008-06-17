@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  stoker_id: 1
+  name: MyString
+  description: MyText
+  start_time: 2008-06-17 14:48:23
+  end_time: 2008-06-17 14:48:23
+
+two:
+  name: MyString
+  stoker_id: 1
+  name: MyString
+  description: MyText
+  start_time: 2008-06-17 14:48:23
+  end_time: 2008-06-17 14:48:23

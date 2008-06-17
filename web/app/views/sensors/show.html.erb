@@ -1,0 +1,43 @@
+<p>
+  <b>Serial number:</b>
+  <%=h @sensor.serial_number %>
+</p>
+
+<p>
+  <b>Name:</b>
+  <%=h @sensor.name %>
+</p>
+
+<p>
+  <b>Target:</b>
+  <%=h @sensor.target %>
+</p>
+
+<p>
+  <b>Alarm:</b>
+  <%=h @sensor.alarm %>
+</p>
+
+<p>
+  <b>Low:</b>
+  <%=h @sensor.low %>
+</p>
+
+<p>
+  <b>High:</b>
+  <%=h @sensor.high %>
+</p>
+
+<p>
+  <b>Blower:</b>
+  <%=h @sensor.blower_id %>
+</p>
+
+<p>
+  <b>Stoker:</b>
+  <%=h @sensor.stoker_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_sensor_path(@sensor) %> |
+<%= link_to 'Back', sensors_path %>

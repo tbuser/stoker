@@ -1,0 +1,33 @@
+<p>
+  <b>Name:</b>
+  <%=h @cook.name %>
+</p>
+
+<p>
+  <b>Stoker:</b>
+  <%=h @cook.stoker_id %>
+</p>
+
+<p>
+  <b>Name:</b>
+  <%=h @cook.name %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%=h @cook.description %>
+</p>
+
+<p>
+  <b>Start time:</b>
+  <%=h @cook.start_time %>
+</p>
+
+<p>
+  <b>End time:</b>
+  <%=h @cook.end_time %>
+</p>
+
+
+<%= link_to 'Edit', edit_cook_path(@cook) %> |
+<%= link_to 'Back', cooks_path %>

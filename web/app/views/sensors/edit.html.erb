@@ -1,0 +1,52 @@
+<h1>Editing sensor</h1>
+
+<%= error_messages_for :sensor %>
+
+<% form_for(@sensor) do |f| %>
+  <p>
+    <b>Serial number</b><br />
+    <%= f.text_field :serial_number %>
+  </p>
+
+  <p>
+    <b>Name</b><br />
+    <%= f.text_field :name %>
+  </p>
+
+  <p>
+    <b>Target</b><br />
+    <%= f.text_field :target %>
+  </p>
+
+  <p>
+    <b>Alarm</b><br />
+    <%= f.text_field :alarm %>
+  </p>
+
+  <p>
+    <b>Low</b><br />
+    <%= f.text_field :low %>
+  </p>
+
+  <p>
+    <b>High</b><br />
+    <%= f.text_field :high %>
+  </p>
+
+  <p>
+    <b>Blower</b><br />
+    <%= f.text_field :blower_id %>
+  </p>
+
+  <p>
+    <b>Stoker</b><br />
+    <%= f.text_field :stoker_id %>
+  </p>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @sensor %> |
+<%= link_to 'Back', sensors_path %>

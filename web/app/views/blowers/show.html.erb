@@ -1,0 +1,18 @@
+<p>
+  <b>Serial number:</b>
+  <%=h @blower.serial_number %>
+</p>
+
+<p>
+  <b>Name:</b>
+  <%=h @blower.name %>
+</p>
+
+<p>
+  <b>Stoker:</b>
+  <%=h @blower.stoker_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_blower_path(@blower) %> |
+<%= link_to 'Back', blowers_path %>

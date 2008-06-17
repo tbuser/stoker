@@ -1,13 +1,15 @@
 #!/usr/bin/env ruby
 # TODO: make this into a proper testing framework  :)
 
-TEST = false
-TEST_HTML = File.open("tests/test1.html")
-TEST_TELNET = File.open("tests/telnet.txt")
+$TEST = true
+$TEST_HTML = File.open("tests/test1.html")
+$TEST_TELNET = File.open("tests/telnet.txt")
 
 require "lib/stoker"
 
-stoker = Stoker.new("10.1.1.8")
+stoker = Net::Stoker.new("10.1.1.8")
+
+stoker.read_sensors
 
 puts "Listing blowers:"
 stoker.blowers.each do |blower|

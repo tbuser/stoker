@@ -1,0 +1,23 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  serial_number: MyString
+  name: MyString
+  target: 1
+  alarm: "None"
+  low: 1
+  high: 1
+  blower_id: 1
+  temp: 1
+  stoker_id: 1
+
+two:
+  serial_number: MyString
+  name: MyString
+  target: 1
+  alarm: "None"
+  low: 1
+  high: 1
+  blower_id:
+  temp: 1
+  stoker_id: 1

@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  serial_number: MyString
+  name: MyString
+  stoker_id: 1
+
+two:
+  serial_number: MyString
+  name: MyString
+  stoker_id: 1

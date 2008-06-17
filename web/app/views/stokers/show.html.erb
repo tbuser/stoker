@@ -1,0 +1,28 @@
+<p>
+  <b>Host:</b>
+  <%=h @stoker.host %>
+</p>
+
+<p>
+  <b>Port:</b>
+  <%=h @stoker.port %>
+</p>
+
+<p>
+  <b>Name:</b>
+  <%=h @stoker.name %>
+</p>
+
+<p>
+  <b>Is on:</b>
+  <%=h @stoker.is_on %>
+</p>
+
+<ul>
+  <% @sensors.each do |s| -%>
+    <li><%= s.name %></li>
+  <% end -%>
+</ul>
+
+<%= link_to 'Edit', edit_stoker_path(@stoker) %> |
+<%= link_to 'Back', stokers_path %>

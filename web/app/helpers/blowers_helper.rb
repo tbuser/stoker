@@ -1,0 +1,2 @@
+module BlowersHelper
+end

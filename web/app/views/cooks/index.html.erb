@@ -1,0 +1,30 @@
+<h1>Listing cooks</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Stoker</th>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Start time</th>
+    <th>End time</th>
+  </tr>
+
+<% for cook in @cooks %>
+  <tr>
+    <td><%=h cook.name %></td>
+    <td><%=h cook.stoker_id %></td>
+    <td><%=h cook.name %></td>
+    <td><%=h cook.description %></td>
+    <td><%=h cook.start_time %></td>
+    <td><%=h cook.end_time %></td>
+    <td><%= link_to 'Show', cook %></td>
+    <td><%= link_to 'Edit', edit_cook_path(cook) %></td>
+    <td><%= link_to 'Destroy', cook, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New cook', new_cook_path %>

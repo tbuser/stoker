@@ -1,0 +1,18 @@
+<p>
+  <b>Stoker:</b>
+  <%=h @event.stoker_id %>
+</p>
+
+<p>
+  <b>Sensor:</b>
+  <%=h @event.sensor_id %>
+</p>
+
+<p>
+  <b>Temp:</b>
+  <%=h @event.temp %>
+</p>
+
+
+<%= link_to 'Edit', edit_event_path(@event) %> |
+<%= link_to 'Back', events_path %>

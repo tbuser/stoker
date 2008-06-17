@@ -1,0 +1,34 @@
+<h1>Listing sensors</h1>
+
+<table>
+  <tr>
+    <th>Serial number</th>
+    <th>Name</th>
+    <th>Target</th>
+    <th>Alarm</th>
+    <th>Low</th>
+    <th>High</th>
+    <th>Blower</th>
+    <th>Stoker</th>
+  </tr>
+
+<% for sensor in @sensors %>
+  <tr>
+    <td><%=h sensor.serial_number %></td>
+    <td><%=h sensor.name %></td>
+    <td><%=h sensor.target %></td>
+    <td><%=h sensor.alarm %></td>
+    <td><%=h sensor.low %></td>
+    <td><%=h sensor.high %></td>
+    <td><%=h sensor.blower_id %></td>
+    <td><%=h sensor.stoker_id %></td>
+    <td><%= link_to 'Show', sensor %></td>
+    <td><%= link_to 'Edit', edit_sensor_path(sensor) %></td>
+    <td><%= link_to 'Destroy', sensor, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New sensor', new_sensor_path %>

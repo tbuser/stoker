@@ -1,0 +1,5 @@
+web/log/*.log
+web/db/*.db
+tmp/**/*
+web/doc/api
+web/doc/app

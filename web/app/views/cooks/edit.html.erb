@@ -1,0 +1,42 @@
+<h1>Editing cook</h1>
+
+<%= error_messages_for :cook %>
+
+<% form_for(@cook) do |f| %>
+  <p>
+    <b>Name</b><br />
+    <%= f.text_field :name %>
+  </p>
+
+  <p>
+    <b>Stoker</b><br />
+    <%= f.text_field :stoker_id %>
+  </p>
+
+  <p>
+    <b>Name</b><br />
+    <%= f.text_field :name %>
+  </p>
+
+  <p>
+    <b>Description</b><br />
+    <%= f.text_area :description %>
+  </p>
+
+  <p>
+    <b>Start time</b><br />
+    <%= f.datetime_select :start_time %>
+  </p>
+
+  <p>
+    <b>End time</b><br />
+    <%= f.datetime_select :end_time %>
+  </p>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @cook %> |
+<%= link_to 'Back', cooks_path %>

@@ -1,0 +1,24 @@
+<h1>Listing blowers</h1>
+
+<table>
+  <tr>
+    <th>Serial number</th>
+    <th>Name</th>
+    <th>Stoker</th>
+  </tr>
+
+<% for blower in @blowers %>
+  <tr>
+    <td><%=h blower.serial_number %></td>
+    <td><%=h blower.name %></td>
+    <td><%=h blower.stoker_id %></td>
+    <td><%= link_to 'Show', blower %></td>
+    <td><%= link_to 'Edit', edit_blower_path(blower) %></td>
+    <td><%= link_to 'Destroy', blower, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New blower', new_blower_path %>
