@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = "stoker"
-  s.version = "0.0.1"
-  s.date = "2008-06-11"
+  s.version = "0.0.2"
+  s.date = "2008-06-16"
   s.summary = "Control a Rock's Bar-B-Que Stoker"
   s.email = "tbuser@gmail.com"
   s.homepage = "http://github.com/tbuser/stoker"
