@@ -86,6 +86,7 @@ class Sensor
   end
   
   def blower
+    raise "Sensor not associated with a blower" if self.blower_serial_number.nil?
     @stoker.blower(self.blower_serial_number)
   end
 

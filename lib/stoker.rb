@@ -123,11 +123,13 @@ class Stoker
   end
 
   def sensor(str)
+    raise "Sensor not specified" if str.nil?
     str = str.downcase
     @sensors.find{|s| s.name.downcase == str or s.serial_number.downcase == str}
   end
 
   def blower(str)
+    raise "Blower not specified" if str.nil?
     str = str.downcase
     @blowers.find{|b| b.name.downcase == str or b.serial_number.downcase == str}
   end

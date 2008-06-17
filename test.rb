@@ -37,7 +37,7 @@ puts "140000002AA65105: #{stoker.blower("140000002AA65105").name}"
 # stoker.sensor("Pit Temp").low = 90
 # stoker.sensor("Pit Temp").high = 110
 
-stoker.sensor("Red").blower = stoker.blower("Fan")
+# stoker.sensor("Red").blower = stoker.blower("Fan")
 
 puts stoker.sensor("Pit Temp").blower_serial_number
 puts stoker.sensor("Red").blower_serial_number
