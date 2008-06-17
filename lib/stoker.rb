@@ -9,6 +9,9 @@ require "net/telnet"
 include Net
 
 class Stoker
+  require File.join(File.dirname(__FILE__), 'sensor')
+  require File.join(File.dirname(__FILE__), 'blower')
+  
   attr_accessor :host, :user, :pass, :http_port, :telnet_port
   
   attr_reader :telnet, :sensors, :blowers, :sensor_opts, :blower_opts
@@ -158,90 +161,5 @@ class Stoker
         res.error!
       end
     end
-  end
-end
-
-class Sensor
-  attr_accessor :name, :serial_number, :temp, :target, :alarm, :low, :high, :blower_serial_number, :blower
-
-  attr_reader :stoker
-
-  FORM_PREFIXES = {
-    "name"    => "n1",
-    "alarm"   => "al",
-    "target"  => "ta",
-    "high"    => "th",
-    "low"     => "tl",
-    "blower"  => "sw"
-  }
-  
-  def initialize(stoker, options = {})
-    @stoker         = stoker
-    options.each do |k,v|
-      eval("@#{k} = options[:#{k}]")
-    end
-  end
-  
-  def name=(str)
-    @name = str
-    @stoker.post(self.form_variable("name") => str)
-  end
-
-  def blower_serial_number=(str)
-    if @blower_serial_number = @stoker.blower(str)
-      # TODO: update stoker
-    else
-      raise "Blower not found"
-    end
-  end
-  
-  def blower=(b)
-    @blower_serial_number = b.serial_number
-    # TODO: update stoker
-  end
-  
-  def blower
-    @stoker.blower(self.blower_serial_number)
-  end
-  
-  def form_variable(type)
-    "#{FORM_PREFIXES[type]}#{self.serial_number}"
-  end
-end
-
-class Blower
-  attr_accessor :name, :serial_number, :sensor_serial_number, :sensor
-
-  attr_reader :stoker
-  
-  def initialize(stoker, options = {})
-    @stoker         = stoker
-    options.each do |k,v|
-      eval("@#{k} = options[:#{k}]")
-    end
-  end
-  
-  def name=(str)
-    @name = str
-    # TODO: update stoker
-  end
-  
-  def sensor_serial_number=(str)
-    if @sensor_serial_number = @stoker.sensor(str)
-      self.sensor.blower = self
-      # setting sensor blower will cause an update of stoker
-    else
-      raise "Sensor not found"
-    end
-  end
-  
-  def sensor=(s)
-    @sensor_serial_number = s.serial_number
-    self.sensor.blower = self
-    # setting sensor blower will cause an update of stoker
-  end
-  
-  def sensor
-    @stoker.sensor(self.sensor_serial_number)
   end
 end
