@@ -21,7 +21,7 @@
     <td><%=h sensor.low %></td>
     <td><%=h sensor.high %></td>
     <td><%=h sensor.blower_id %></td>
-    <td><%=h sensor.stoker_id %></td>
+    <td><%= link_to sensor.stoker.name, sensor.stoker %></td>
     <td><%= link_to 'Show', sensor %></td>
     <td><%= link_to 'Edit', edit_sensor_path(sensor) %></td>
     <td><%= link_to 'Destroy', sensor, :confirm => 'Are you sure?', :method => :delete %></td>

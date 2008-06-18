@@ -1,0 +1,15 @@
+<h2>Blowers</h2>
+
+<ul>
+<% @stoker.blowers.each do |b| -%>
+  <li><%= link_to b.name, b %></li>
+<% end -%>
+</ul>
+
+<h2>Sensors</h2>
+
+<ul>
+<% @stoker.sensors.each do |s| -%>
+  <li><%= link_to s.name, s %></li>
+<% end -%>
+</ul>

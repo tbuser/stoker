@@ -18,11 +18,15 @@
   <%=h @stoker.is_on %>
 </p>
 
-<ul>
-  <% @sensors.each do |s| -%>
-    <li><%= s.name %></li>
-  <% end -%>
-</ul>
-
 <%= link_to 'Edit', edit_stoker_path(@stoker) %> |
 <%= link_to 'Back', stokers_path %>
+
+<p>
+  <%= link_to_remote "Sync", :url => sync_stoker_path(@stoker), :before => "$('sensors_spinner').show()", :complete => "$('sensors_spinner').hide()" %>
+  <%#= link_to "Sync Plain", sync_stoker_path(@stoker), :method => :post %>
+  <%= spinner("sensors_spinner") %>
+</p>
+
+<div id="sensors">
+  <%= render :partial => "sensors" %>
+</div>

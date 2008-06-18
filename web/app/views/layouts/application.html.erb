@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>Stoker Web</title>
+  <%= stylesheet_link_tag 'scaffold' %>
+  <%= stylesheet_link_tag 'application' %>
+  <%= javascript_include_tag :defaults %>
+</head>
+<body>
+
+<p>
+  <%= link_to_unless_current "Stokers", stokers_path %>
+  <%= link_to_unless_current "Blowers", blowers_path %>
+  <%= link_to_unless_current "Sensors", sensors_path %>
+  <%= link_to_unless_current "Events", events_path %>
+  <%= link_to_unless_current "Cooks", cooks_path %>
+</p>
+
+<% for name in [:notice, :warning, :message] -%>
+  <% if flash[name] -%>
+    <%= "<div id=\"#{name}\" class=\"alert\">#{flash[name]}</div>" %>
+  <% end -%>
+<% end -%>
+
+<%= yield  %>
+
+</body>
+</html>

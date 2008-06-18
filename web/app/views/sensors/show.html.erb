@@ -30,12 +30,12 @@
 
 <p>
   <b>Blower:</b>
-  <%=h @sensor.blower_id %>
+  <%= link_to @sensor.blower.name, @sensor.blower if @sensor.blower %>
 </p>
 
 <p>
   <b>Stoker:</b>
-  <%=h @sensor.stoker_id %>
+  <%= link_to @sensor.stoker.name, @sensor.stoker %>
 </p>
 
 

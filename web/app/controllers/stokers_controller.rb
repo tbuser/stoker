@@ -81,11 +81,18 @@ class StokersController < ApplicationController
   
   def sync
     respond_to do |format|
-      if @stoker.sync
-        flash[:notice] = "Stoker sensors synchronized"
-        format.html { redirect_to(@stoker) }
+      begin
+        @stoker.sync!
+        
+        format.html do
+          flash[:notice] = "Stoker sensors synchronized"
+          redirect_to(@stoker)
+        end
         format.xml  { head :ok }
-      else
+        format.js
+      rescue Exception => e
+        logger.info(e.backtrace.to_yaml)
+        flash[:warning] = e.message
         format.html { redirect_to(@stoker) }
         format.xml  { render :xml => @stoker.errors, :status => :unprocessable_entity }
       end

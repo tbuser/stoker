@@ -1,0 +1,3 @@
+@stoker.reload
+page["sensors"].replace_html :partial => "sensors"
+page["sensors"].visual_effect :highlight

@@ -10,9 +10,13 @@
 
 <p>
   <b>Stoker:</b>
-  <%=h @blower.stoker_id %>
+  <%= link_to @blower.stoker.name, @blower.stoker %>
 </p>
 
+<p>
+  <b>Sensor:</b>
+  <%= link_to @blower.sensor.name, @blower.sensor if @blower.sensor %>
+</p>
 
 <%= link_to 'Edit', edit_blower_path(@blower) %> |
 <%= link_to 'Back', blowers_path %>

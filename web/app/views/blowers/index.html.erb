@@ -11,7 +11,7 @@
   <tr>
     <td><%=h blower.serial_number %></td>
     <td><%=h blower.name %></td>
-    <td><%=h blower.stoker_id %></td>
+    <td><%= link_to blower.stoker.name, blower.stoker %></td>
     <td><%= link_to 'Show', blower %></td>
     <td><%= link_to 'Edit', edit_blower_path(blower) %></td>
     <td><%= link_to 'Destroy', blower, :confirm => 'Are you sure?', :method => :delete %></td>
