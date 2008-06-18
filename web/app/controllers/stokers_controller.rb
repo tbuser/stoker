@@ -1,4 +1,6 @@
 class StokersController < ApplicationController
+  before_filter :find_stoker, :except => [:index, :new, :create]
+  
   # GET /stokers
   # GET /stokers.xml
   def index
@@ -13,11 +15,6 @@ class StokersController < ApplicationController
   # GET /stokers/1
   # GET /stokers/1.xml
   def show
-    @stoker = Stoker.find(params[:id])
-
-    @stoker.net.read_sensors
-    @sensors = @stoker.net.sensors
-
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @stoker }
@@ -37,7 +34,6 @@ class StokersController < ApplicationController
 
   # GET /stokers/1/edit
   def edit
-    @stoker = Stoker.find(params[:id])
   end
 
   # POST /stokers
@@ -60,8 +56,6 @@ class StokersController < ApplicationController
   # PUT /stokers/1
   # PUT /stokers/1.xml
   def update
-    @stoker = Stoker.find(params[:id])
-
     respond_to do |format|
       if @stoker.update_attributes(params[:stoker])
         flash[:notice] = 'Stoker was successfully updated.'
@@ -77,12 +71,28 @@ class StokersController < ApplicationController
   # DELETE /stokers/1
   # DELETE /stokers/1.xml
   def destroy
-    @stoker = Stoker.find(params[:id])
     @stoker.destroy
 
     respond_to do |format|
       format.html { redirect_to(stokers_url) }
       format.xml  { head :ok }
     end
+  end
+  
+  def sync
+    respond_to do |format|
+      if @stoker.sync
+        flash[:notice] = "Stoker sensors synchronized"
+        format.html { redirect_to(@stoker) }
+        format.xml  { head :ok }
+      else
+        format.html { redirect_to(@stoker) }
+        format.xml  { render :xml => @stoker.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+  
+  def find_stoker
+    @stoker = Stoker.find(params[:id])
   end
 end
