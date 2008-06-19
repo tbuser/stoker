@@ -28,6 +28,9 @@ puts "Pit Temp Blower: #{stoker.sensor("pit temp").blower.name}"
 puts "Fan Sensor: #{stoker.blower("Fan").sensor.name}"
 puts "140000002AA65105: #{stoker.blower("140000002AA65105").name}"
 
+# stoker.sensor("Red").update_attributes :name => "Rouge", :target => 123, :blower => stoker.blower("Fan")
+# stoker.sensor("Red").update_attributes :name => "Rouge", :target => "100"
+
 # stoker.sensor("Red").name = "Rouge"
 # stoker.blower("Fan").name = "Blower"
 

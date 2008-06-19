@@ -51,5 +51,19 @@ module Net
     def change_without_update(var, val)
       eval("@#{var} = val")
     end
+
+    def update_attributes(params)
+      variables = {}
+      params.each do |k,v|
+        if k.to_s == "sensor"
+          k = v.form_variable("blower")
+          v = self.serial_number
+        else
+          k = self.form_variable(k.to_s)
+        end
+        variables[k] = v unless k.to_s == "serial_number"
+      end
+      @stoker.post(variables)
+    end
   end
 end

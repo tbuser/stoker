@@ -44,6 +44,8 @@ module Net
     end
   
     def read_sensors(attempt = 1)
+      warn "Requesting http://#{@host}:#{@http_port}"
+
       @sensors    = []
       @blowers    = []
       html        = $TEST_HTML if $TEST
@@ -51,7 +53,7 @@ module Net
       contents    = html.read
       @sensor_opts = []
       @blower_opts = []
-    
+
       doc = Hpricot(contents)
 
       (doc/"td.ser_num/b[text() = 'Blower']:first/../../../tr").each do |row|
@@ -139,30 +141,33 @@ module Net
     
       queries = []
 
-      if $TEST
-        params.each do |k,v|
-          queries << "#{k}=#{CGI::escape(v)}"
-        end
-
-        q = queries.join("&")
-
-        warn "#{post_url}?#{q}"
-      else
-        # stoker http doesn't like keep alive, so have to do post request the long way
-        # res = HTTP.post_form(URI.parse(post_url), params)
-        url = URI.parse(post_url)
-        req = Net::HTTP::Post.new(url.path)
-        req["Keep-Alive"] = false
-        req.set_form_data(params)
-        res = Net::HTTP.new(url.host, url.port).start {|http| http.request(req) }
-        case res
-        when Net::HTTPSuccess, Net::HTTPRedirection
-          # puts res.body
-          true
-        else
-          res.error!
-        end
+      params.each do |k,v|
+        queries << "#{k}=#{CGI::escape(v.to_s)}"
       end
+
+      q = queries.join("&")
+
+      warn "Posting #{post_url}?#{q}"
+
+      # stoker http doesn't like keep alive, so have to do post request the long way
+      # res = HTTP.post_form(URI.parse(post_url), params)
+      url = URI.parse(post_url)
+      req = Net::HTTP::Post.new(url.path)
+      req["Keep-Alive"] = 300
+      req["Connection"] = "keep-alive"
+      req["Referer"] = "http://#{@host}:#{@http_port}/index.html"
+      req.set_form_data(params)
+      http = Net::HTTP.new(url.host, url.port)
+      http.read_timeout = 600
+      res = http.start {|http| http.request(req)}
+      case res
+      when Net::HTTPSuccess, Net::HTTPRedirection
+        # puts res.body
+        true
+      else
+        res.error!
+      end
+
     end
   end
 end

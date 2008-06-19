@@ -1,50 +1,54 @@
 <h2><%=h @stoker.name %></h2>
 
-<!-- http://code.google.com/apis/visualization/documentation/gallery/annotatedtimeline.html -->
-<!-- <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-<script type="text/javascript">
-  google.load("visualization", "1", {packages:["annotatedtimeline"]});
-  google.setOnLoadCallback(drawChart);
-  function drawChart() {
-    var data = new google.visualization.DataTable();
-    data.addColumn('date', 'Date');
-    <% @stoker.sensors.each do |s| -%>
-      data.addColumn('number', '<%=h s.name %>');
-    <% end -%>
-    <%
-      row_count = -1
-      column_count = 0
-      last_time = nil
-      set_values = ""
-      
-      @stoker.events.find(:all, :order => "created_at ASC").each do |e|
-        if last_time.nil? or (e.created_at >= last_time + 1.minutes or column_count < @stoker.sensors.size)
-          if last_time != e.created_at
-            row_count += 1
-            column_count = 0
-            set_values += "data.setValue(#{row_count}, #{column_count}, new Date(#{e.created_at.strftime("%Y %m %d %H %m %S").split(" ").collect{|x| x.to_i}.join(", ")}));\n" unless row_count + 1 > 120
-          end
+<%
+  # {
+  #   :red => [['11:00', 50], ['11:01', 55]]
+  # }
 
-          column_count += 1
-          set_values += "data.setValue(#{row_count}, #{column_count}, #{e.temp});\n" unless row_count + 1 > 120
-          last_time = e.created_at
-        end
-      end
-    %>
-    data.addRows(<%= row_count + 1 > 120 ? 120 : row_count + 1 %>);
-
-    <%= set_values %>
-
-    var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-    chart.draw(data, {displayAnnotations: true});
-  }
-</script>
+  data_sets = {}
+  @stoker.events.find(:all, :order => "created_at DESC", :conditions => ["created_at >= ?", Time.now - 2.hours]).each do |e|
+    data_sets[e.sensor.name] ||= []
+    data_sets[e.sensor.name] << [e.created_at.to_i, e.temp]
+  end
   
-<div id="chart_div" style="width: 700px; height: 240px;"></div> -->
+  x = 0
+  data_set_js = ""
+  data_set_names = []
+  
+  data_sets.each do |sensor,temps|
+    temps_js = ""
+    temp_strings = []
+    
+    temps.each do |temp|
+      temp_strings << "[#{temp[0]}, #{temp[1]}]"
+    end
+  
+    temps_js = temp_strings.join(", ")
+    data_set_js << "d#{x} = [#{temps_js}];\n"
 
-<p>
-  <%= image_tag formatted_stoker_path(@stoker, :png) %>
-</p>
+    data_set_names << "d#{x}"
+    
+    x += 1
+    
+  end
+%>
+
+<%= javascript_tag ("
+  function hmsTickFormatter(val) {
+    time = new Date;
+    time.setTime(val * 1000);
+    // return time.getHours() + ':' + time.getMinutes();
+    return time.strftime('%I:%M:%S');
+  }
+
+  document.observe('dom:loaded', function() {
+#{data_set_js}
+  
+    var f = Flotr.draw($('container'), [#{data_set_names.join(", ")}], { xaxis: {tickFormatter: hmsTickFormatter}});
+  });			
+") %>
+
+<div id="container" style="width:600px;height:300px;"></div>
 
 <p>
   <b>Host:</b>
