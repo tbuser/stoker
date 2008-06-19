@@ -23,7 +23,7 @@ class Stoker < ActiveRecord::Base
       net_stoker.blowers.each do |nb|
         if blower = Blower.find_or_create_by_serial_number(nb.serial_number)
           blower.update_attributes!(
-            :name => nb.name,
+            :name   => nb.name,
             :stoker => self
           )
         else
@@ -34,11 +34,11 @@ class Stoker < ActiveRecord::Base
       net_stoker.sensors.each do |ns|
         if sensor = Sensor.find_or_create_by_serial_number(ns.serial_number)
           sensor.update_attributes!(
-            :name => ns.name,
+            :name   => ns.name,
             :target => ns.target,
-            :alarm => ns.alarm,
-            :low => ns.low,
-            :high => ns.high,
+            :alarm  => ns.alarm,
+            :low    => ns.low,
+            :high   => ns.high,
             :stoker => self
           )
 
@@ -46,9 +46,32 @@ class Stoker < ActiveRecord::Base
             sensor.blower = Blower.find_by_serial_number(ns.blower_serial_number)
             sensor.save!
           end
+          
+          Event.create!(
+            :stoker => self,
+            :sensor => sensor,
+            :temp   => ns.temp
+          )
         else
           raise "Failed to find or create sensor #{ns.serial_number}"
         end
+      end
+    end
+  end
+  
+  def status
+    if self.events.find(:first, :conditions => ["created_at >= ?", Time.now - 60.seconds])
+      "Running"
+    else
+      "Stopped"
+    end
+  end
+  
+  def run!
+    spawn(:method => :thread) do
+      while true do
+        self.sync!
+        sleep 30
       end
     end
   end

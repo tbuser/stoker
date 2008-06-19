@@ -1,11 +1,8 @@
+<h2><%=h @blower.name %></h2>
+
 <p>
   <b>Serial number:</b>
   <%=h @blower.serial_number %>
-</p>
-
-<p>
-  <b>Name:</b>
-  <%=h @blower.name %>
 </p>
 
 <p>
@@ -16,6 +13,11 @@
 <p>
   <b>Sensor:</b>
   <%= link_to @blower.sensor.name, @blower.sensor if @blower.sensor %>
+</p>
+
+<p>
+  <b>Last Updated:</b>
+  <%= format_time(@blower.updated_at) %>
 </p>
 
 <%= link_to 'Edit', edit_blower_path(@blower) %> |

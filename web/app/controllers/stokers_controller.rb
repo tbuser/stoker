@@ -18,6 +18,20 @@ class StokersController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @stoker }
+      format.png do
+        graph = Scruffy::Graph.new
+        graph.title = @stoker.name
+
+        event_times = @stoker.events.find(:all, :conditions => ["created_at >= ?", Time.now - 2.hours], :group => "created_at")
+        
+        @stoker.sensors.each do |s|
+          graph.add :line, s.name, s.events.find(:all, :conditions => ["created_at >= ?", Time.now - 2.hours]).collect{|e| e.temp}
+        end
+        
+        graph.point_markers = event_times.collect{|e| e.created_at}
+        
+        send_data(graph.render(:width => 800, :as => "PNG"), :type => "image/png", :filename => "#{@stoker.name}_graph.png", :disposition => "inline")
+      end
     end
   end
 
@@ -90,6 +104,29 @@ class StokersController < ApplicationController
         end
         format.xml  { head :ok }
         format.js
+      rescue Exception => e
+        logger.info(e.backtrace.to_yaml)
+        flash[:warning] = e.message
+        format.html { redirect_to(@stoker) }
+        format.xml  { render :xml => @stoker.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  def run
+    respond_to do |format|
+      begin
+        spawn do
+          while true do
+            @stoker.sync!
+            sleep 30
+          end
+        end
+        
+        # @stoker.run!
+        
+        format.html { redirect_to(@stoker) }
+        format.xml { head :ok }
       rescue Exception => e
         logger.info(e.backtrace.to_yaml)
         flash[:warning] = e.message

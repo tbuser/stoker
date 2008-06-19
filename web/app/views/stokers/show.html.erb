@@ -1,3 +1,51 @@
+<h2><%=h @stoker.name %></h2>
+
+<!-- http://code.google.com/apis/visualization/documentation/gallery/annotatedtimeline.html -->
+<!-- <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["annotatedtimeline"]});
+  google.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('date', 'Date');
+    <% @stoker.sensors.each do |s| -%>
+      data.addColumn('number', '<%=h s.name %>');
+    <% end -%>
+    <%
+      row_count = -1
+      column_count = 0
+      last_time = nil
+      set_values = ""
+      
+      @stoker.events.find(:all, :order => "created_at ASC").each do |e|
+        if last_time.nil? or (e.created_at >= last_time + 1.minutes or column_count < @stoker.sensors.size)
+          if last_time != e.created_at
+            row_count += 1
+            column_count = 0
+            set_values += "data.setValue(#{row_count}, #{column_count}, new Date(#{e.created_at.strftime("%Y %m %d %H %m %S").split(" ").collect{|x| x.to_i}.join(", ")}));\n" unless row_count + 1 > 120
+          end
+
+          column_count += 1
+          set_values += "data.setValue(#{row_count}, #{column_count}, #{e.temp});\n" unless row_count + 1 > 120
+          last_time = e.created_at
+        end
+      end
+    %>
+    data.addRows(<%= row_count + 1 > 120 ? 120 : row_count + 1 %>);
+
+    <%= set_values %>
+
+    var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
+    chart.draw(data, {displayAnnotations: true});
+  }
+</script>
+  
+<div id="chart_div" style="width: 700px; height: 240px;"></div> -->
+
+<p>
+  <%= image_tag formatted_stoker_path(@stoker, :png) %>
+</p>
+
 <p>
   <b>Host:</b>
   <%=h @stoker.host %>
@@ -9,21 +57,16 @@
 </p>
 
 <p>
-  <b>Name:</b>
-  <%=h @stoker.name %>
-</p>
-
-<p>
-  <b>Is on:</b>
-  <%=h @stoker.is_on %>
+  <b>Status:</b>
+  <%=h @stoker.status %> <%= link_to "Run", run_stoker_path(@stoker), :method => :put unless @stoker.status == "Running" %>
 </p>
 
 <%= link_to 'Edit', edit_stoker_path(@stoker) %> |
 <%= link_to 'Back', stokers_path %>
 
 <p>
-  <%= link_to_remote "Sync", :url => sync_stoker_path(@stoker), :before => "$('sensors_spinner').show()", :complete => "$('sensors_spinner').hide()" %>
-  <%#= link_to "Sync Plain", sync_stoker_path(@stoker), :method => :post %>
+  <%= link_to_remote "Sync", :url => sync_stoker_path(@stoker), :method => :put, :before => "$('sensors_spinner').show()", :complete => "$('sensors_spinner').hide()" %>
+  <%#= link_to "Sync Plain", sync_stoker_path(@stoker), :method => :put %>
   <%= spinner("sensors_spinner") %>
 </p>
 

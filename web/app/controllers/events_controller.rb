@@ -2,7 +2,8 @@ class EventsController < ApplicationController
   # GET /events
   # GET /events.xml
   def index
-    @events = Event.find(:all)
+    @events = Event.paginate :per_page => 10, :page => params[:page],
+                             :order => "created_at DESC"
 
     respond_to do |format|
       format.html # index.html.erb

@@ -1,11 +1,11 @@
-<h1>Listing stokers</h1>
+<h2>Listing stokers</h2>
 
 <table>
   <tr>
     <th>Host</th>
     <th>Port</th>
     <th>Name</th>
-    <th>Is on</th>
+    <th>Status</th>
   </tr>
 
 <% for stoker in @stokers %>
@@ -13,7 +13,7 @@
     <td><%=h stoker.host %></td>
     <td><%=h stoker.port %></td>
     <td><%=h stoker.name %></td>
-    <td><%=h stoker.is_on %></td>
+    <td><%=h stoker.status %></td>
     <td><%= link_to 'Show', stoker %></td>
     <td><%= link_to 'Edit', edit_stoker_path(stoker) %></td>
     <td><%= link_to 'Destroy', stoker, :confirm => 'Are you sure?', :method => :delete %></td>

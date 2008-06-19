@@ -10,4 +10,8 @@ class Sensor < ActiveRecord::Base
   validates_inclusion_of :alarm, :in => ALARMS
   validates_uniqueness_of :serial_number
   validates_uniqueness_of :name, :scope => :stoker_id, :unless => Proc.new {|s| s.stoker_id.to_s == ""}
+  
+  def temp
+    self.events.find(:first, :order => "created_at DESC").temp rescue nil
+  end
 end

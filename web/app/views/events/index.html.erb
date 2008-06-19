@@ -1,7 +1,8 @@
-<h1>Listing events</h1>
+<h2>Listing events</h2>
 
 <table>
   <tr>
+    <th>Time</th>
     <th>Stoker</th>
     <th>Sensor</th>
     <th>Temp</th>
@@ -9,8 +10,9 @@
 
 <% for event in @events %>
   <tr>
-    <td><%=h event.stoker_id %></td>
-    <td><%=h event.sensor_id %></td>
+    <td><%= format_time(event.created_at) %></td>
+    <td><%= link_to event.stoker.name, event.stoker %></td>
+    <td><%= link_to event.sensor.name, event.sensor %></td>
     <td><%=h event.temp %></td>
     <td><%= link_to 'Show', event %></td>
     <td><%= link_to 'Edit', edit_event_path(event) %></td>
@@ -20,5 +22,7 @@
 </table>
 
 <br />
+
+<%= will_paginate @events %>
 
 <%= link_to 'New event', new_event_path %>

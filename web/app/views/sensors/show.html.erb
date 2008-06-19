@@ -1,11 +1,8 @@
+<h2><%= @sensor.name %></h2>
+
 <p>
   <b>Serial number:</b>
   <%=h @sensor.serial_number %>
-</p>
-
-<p>
-  <b>Name:</b>
-  <%=h @sensor.name %>
 </p>
 
 <p>
@@ -38,6 +35,10 @@
   <%= link_to @sensor.stoker.name, @sensor.stoker %>
 </p>
 
+<p>
+  <b>Last Updated:</b>
+  <%= format_time(@sensor.updated_at) %>
+</p>
 
 <%= link_to 'Edit', edit_sensor_path(@sensor) %> |
 <%= link_to 'Back', sensors_path %>

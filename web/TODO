@@ -1,0 +1,5 @@
+* figure out how to communicate with and kill a spawned rails process
+* find a good chart library
+* finish web interface :)
+* resolve gem dependencies (hpricot, rails 2.1, sqlite3-ruby, will_paginate, scruffy?)
+* maybe make a shoes app to make it as easy as possible to install stoker gem and then start/stop web interface
