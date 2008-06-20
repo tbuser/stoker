@@ -4,16 +4,16 @@ module ApplicationHelper
     image_tag "spinner.gif", :id => id, :style => "display:none"
   end
   
-  def format_date(time)
+  def format_date(time, options = {})
     time.to_time.strftime("%Y-%m-%d")
   end
 
-  def format_time(time)
-    time.to_time.strftime("%I:%m %p")
+  def format_time(time, options = {})
+    time.to_time.strftime("%I:%m#{options[:include_seconds] ? ':%S' : ''} %p")
   end
   
-  def format_datetime(time)
-    format_date(time.to_time) + ' ' + format_time(time.to_time)
+  def format_datetime(time, options = {})
+    format_date(time.to_time, options) + ' ' + format_time(time.to_time, options)
   end
   
   def graph(events, container_name)

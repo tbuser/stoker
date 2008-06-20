@@ -10,7 +10,7 @@
 
 <% for event in @events %>
   <tr>
-    <td><%= format_datetime(event.created_at) %></td>
+    <td><%= format_datetime(event.created_at, :include_seconds => true) %></td>
     <td><%= link_to event.stoker.name, event.stoker %></td>
     <td><%= link_to event.sensor.name, event.sensor %></td>
     <td><%=h event.temp %></td>
