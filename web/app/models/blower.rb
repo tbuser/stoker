@@ -8,7 +8,7 @@ class Blower < ActiveRecord::Base
   before_update :update_net_stoker
 
   def update_net_stoker
-    if Stoker.do_update and (self.changed & ["name", "sensor_id"]).size > 0
+    if !Stoker.skip_update and (self.changed & ["name", "sensor_id"]).size > 0
       spawn do
         begin
           self.stoker.net.read_sensors

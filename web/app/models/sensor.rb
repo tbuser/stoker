@@ -18,8 +18,7 @@ class Sensor < ActiveRecord::Base
   end
 
   def update_net_stoker
-    if Stoker.do_update and (self.changed & ["name", "target", "alarm", "high", "low", "blower_id"]).size > 0
-      warn ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> #{Stoker.do_update}"
+    if !Stoker.skip_update and (self.changed & ["name", "target", "alarm", "high", "low", "blower_id"]).size > 0
       spawn do
         begin
           self.stoker.net.read_sensors

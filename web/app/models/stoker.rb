@@ -7,14 +7,12 @@ class Stoker < ActiveRecord::Base
   validates_uniqueness_of :name
   validates_uniqueness_of :host, :scope => :port
 
-  def self.do_update
-    @do_update ||= true
-  end
+  class << self; attr_accessor :skip_update end
 
   def self.no_update
-    @do_update = false
+    Stoker.skip_update = true
     yield
-    @do_update = true
+    Stoker.skip_update = false
   end
   
   def net
