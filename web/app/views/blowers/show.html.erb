@@ -7,7 +7,7 @@
 
 <p>
   <b>Stoker:</b>
-  <%= link_to @blower.stoker.name, @blower.stoker %>
+  <%= link_to @blower.stoker.name, @blower.stoker if @blower.stoker %>
 </p>
 
 <p>
@@ -17,7 +17,7 @@
 
 <p>
   <b>Last Updated:</b>
-  <%= format_time(@blower.updated_at) %>
+  <%= format_datetime(@blower.updated_at) %>
 </p>
 
 <%= link_to 'Edit', edit_blower_path(@blower) %> |

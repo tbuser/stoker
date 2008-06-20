@@ -12,7 +12,7 @@
 
 <p>
   <b>Time:</b>
-  <%= format_time @event.created_at %>
+  <%= format_datetime(@event.created_at) %>
 </p>
 
 <%= link_to 'Edit', edit_event_path(@event) %> |

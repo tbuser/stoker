@@ -32,12 +32,12 @@
 
 <p>
   <b>Stoker:</b>
-  <%= link_to @sensor.stoker.name, @sensor.stoker %>
+  <%= link_to @sensor.stoker.name, @sensor.stoker if @sensor.stoker %>
 </p>
 
 <p>
   <b>Last Updated:</b>
-  <%= format_time(@sensor.updated_at) %>
+  <%= format_datetime(@sensor.updated_at) %>
 </p>
 
 <%= link_to 'Edit', edit_sensor_path(@sensor) %> |

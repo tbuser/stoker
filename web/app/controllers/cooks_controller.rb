@@ -1,6 +1,6 @@
 class CooksController < ApplicationController
-  # GET /cooks
-  # GET /cooks.xml
+  before_filter :find_cook, :except => [:index, :new, :create]
+  
   def index
     @cooks = Cook.find(:all)
 
@@ -10,21 +10,28 @@ class CooksController < ApplicationController
     end
   end
 
-  # GET /cooks/1
-  # GET /cooks/1.xml
   def show
-    @cook = Cook.find(params[:id])
-
+    @recent_food_events = @cook.stoker.events.find(:all,
+      :include => :sensor, 
+      :conditions => ["events.created_at >= ? AND sensors.alarm <> ?", Time.now - 2.hours, "Fire"],
+      :order => "events.created_at DESC"
+    )
+    
+    @recent_fire_events = @cook.stoker.events.find(:all,
+      :include => :sensor,
+      :conditions => ["events.created_at >= ? AND sensors.alarm = ?", Time.now - 2.hours, "Fire"],
+      :order => "events.created_at DESC"
+    )
+    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @cook }
     end
   end
 
-  # GET /cooks/new
-  # GET /cooks/new.xml
   def new
     @cook = Cook.new
+    @cook.start_time = Time.now
 
     respond_to do |format|
       format.html # new.html.erb
@@ -32,13 +39,9 @@ class CooksController < ApplicationController
     end
   end
 
-  # GET /cooks/1/edit
   def edit
-    @cook = Cook.find(params[:id])
   end
 
-  # POST /cooks
-  # POST /cooks.xml
   def create
     @cook = Cook.new(params[:cook])
 
@@ -54,11 +57,7 @@ class CooksController < ApplicationController
     end
   end
 
-  # PUT /cooks/1
-  # PUT /cooks/1.xml
   def update
-    @cook = Cook.find(params[:id])
-
     respond_to do |format|
       if @cook.update_attributes(params[:cook])
         flash[:notice] = 'Cook was successfully updated.'
@@ -71,15 +70,16 @@ class CooksController < ApplicationController
     end
   end
 
-  # DELETE /cooks/1
-  # DELETE /cooks/1.xml
   def destroy
-    @cook = Cook.find(params[:id])
     @cook.destroy
 
     respond_to do |format|
       format.html { redirect_to(cooks_url) }
       format.xml  { head :ok }
     end
+  end
+  
+  def find_cook
+    @cook = Cook.find(params[:id])
   end
 end

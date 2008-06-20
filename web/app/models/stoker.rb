@@ -24,7 +24,6 @@ class Stoker < ActiveRecord::Base
 
       self.blowers.clear
       self.sensors.clear
-      self.save!
       
       net_stoker = self.net
       net_stoker.read_sensors
@@ -72,10 +71,14 @@ class Stoker < ActiveRecord::Base
   end
   
   def status
-    if self.events.find(:first, :conditions => ["created_at >= ?", Time.now - 2.minutes])
+    if self.events.find(:first, :conditions => ["created_at >= ?", Time.now - 1.minutes])
       "Running"
     else
       "Stopped"
     end
+  end
+  
+  def host_url
+    "http://#{self.host}:#{self.port}"
   end
 end

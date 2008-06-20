@@ -1,0 +1,21 @@
+<%= javascript_tag ("
+  document.observe('dom:loaded', function() {
+    #{options[:data_set_js]}
+
+    var f = Flotr.draw(
+      $('#{options[:container_name]}'),
+      [#{options[:data_set_names].join(", ")}],
+      { 
+        yaxis:  { autoscaleMargin: 3 },
+        lines:  { show: true },
+        points: { show: false, radius: 3, fill: true, fillColor: '#FFFFFF' },
+        xaxis:  { tickFormatter: hmsTickFormatter },
+        legend: { position: 'nw', backgroundColor: '#D2E8FF' },
+        mouse:  { track: true, position: 'se', color: '#000000', margin: 5, sensibility: 10, radius: 2, trackDecimals: 0, trackFormatter: hmsTrackFormatter }
+      }
+    );
+  });			
+") %>
+
+<div id="<%= options[:container_name] %>" style="width:600px;height:300px;"></div>
+<!-- <%= button_to_function "Save Image", "saveImage('#{options[:container_name]}');" %><br/> -->

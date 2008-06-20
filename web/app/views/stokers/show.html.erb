@@ -1,78 +1,22 @@
 <h2><%=h @stoker.name %></h2>
 
-<%
-  # {
-  #   :red => [['11:00', 50], ['11:01', 55]]
-  # }
-
-  data_sets = {}
-  @stoker.events.find(:all, :order => "created_at DESC", :conditions => ["created_at >= ?", Time.now - 2.hours]).each do |e|
-    data_sets[e.sensor.name] ||= []
-    data_sets[e.sensor.name] << [e.created_at.to_i, e.temp]
-  end
-  
-  x = 0
-  data_set_js = ""
-  data_set_names = []
-  
-  data_sets.each do |sensor,temps|
-    temps_js = ""
-    temp_strings = []
-    
-    temps.each do |temp|
-      temp_strings << "[#{temp[0]}, #{temp[1]}]"
-    end
-  
-    temps_js = temp_strings.join(", ")
-    data_set_js << "d#{x} = [#{temps_js}];\n"
-
-    data_set_names << "d#{x}"
-    
-    x += 1
-    
-  end
-%>
-
-<%= javascript_tag ("
-  function hmsTickFormatter(val) {
-    time = new Date;
-    time.setTime(val * 1000);
-    // return time.getHours() + ':' + time.getMinutes();
-    return time.strftime('%I:%M:%S');
-  }
-
-  document.observe('dom:loaded', function() {
-#{data_set_js}
-  
-    var f = Flotr.draw($('container'), [#{data_set_names.join(", ")}], { xaxis: {tickFormatter: hmsTickFormatter}});
-  });			
-") %>
-
-<div id="container" style="width:600px;height:300px;"></div>
-
-<p>
-  <b>Host:</b>
-  <%=h @stoker.host %>
-</p>
-
-<p>
-  <b>Port:</b>
-  <%=h @stoker.port %>
-</p>
-
 <p>
   <b>Status:</b>
   <%=h @stoker.status %> <%= link_to "Run", run_stoker_path(@stoker), :method => :put unless @stoker.status == "Running" %>
 </p>
 
-<%= link_to 'Edit', edit_stoker_path(@stoker) %> |
-<%= link_to 'Back', stokers_path %>
-
 <p>
-  <%= link_to_remote "Sync", :url => sync_stoker_path(@stoker), :method => :put, :before => "$('sensors_spinner').show()", :complete => "$('sensors_spinner').hide()" %>
-  <%#= link_to "Sync Plain", sync_stoker_path(@stoker), :method => :put %>
-  <%= spinner("sensors_spinner") %>
+  <b>Host:</b>
+  <%= link_to @stoker.host_url, @stoker.host_url %>
 </p>
+
+<%= graph(@recent_events, "recent_events") %>
+
+<%= link_to 'Edit', edit_stoker_path(@stoker) %> |
+
+<%= link_to_remote "Sync", :url => sync_stoker_path(@stoker), :method => :put, :before => "$('sensors_spinner').show()", :complete => "$('sensors_spinner').hide()" %>
+<%#= link_to "Sync Plain", sync_stoker_path(@stoker), :method => :put %>
+<%= spinner("sensors_spinner") %>
 
 <div id="sensors">
   <%= render :partial => "sensors" %>

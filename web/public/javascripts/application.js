@@ -37,3 +37,19 @@ Date.prototype.strftime = function (fmt) {
    return fmt;
 };
 
+function saveImage(id) {
+  canvas = $$('#' + id + ' canvas')[0]
+  Canvas2Image.saveAsPNG(canvas);
+}
+
+function hmsTickFormatter(val) {
+  time = new Date;
+  time.setTime(val * 1000);
+  // return time.getHours() + ':' + time.getMinutes();
+  return time.strftime('%I:%M %p');
+}
+
+function hmsTrackFormatter(obj) {
+  time = hmsTickFormatter(obj.x);
+  return time + ': ' + obj.y + 'F';
+}

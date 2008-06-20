@@ -13,10 +13,10 @@
 <% for cook in @cooks %>
   <tr>
     <td><%=h cook.name %></td>
-    <td><%=h cook.stoker_id %></td>
+    <td><%= link_to cook.stoker.name, cook.stoker if cook.stoker %></td>
     <td><%=h cook.name %></td>
-    <td><%=h cook.description %></td>
-    <td><%=h cook.start_time %></td>
+    <td><%=h truncate(cook.description) %></td>
+    <td><%= format_datetime(cook.start_time) %></td>
     <td><%=h cook.end_time %></td>
     <td><%= link_to 'Show', cook %></td>
     <td><%= link_to 'Edit', edit_cook_path(cook) %></td>

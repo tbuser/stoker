@@ -1,8 +1,6 @@
 class StokersController < ApplicationController
   before_filter :find_stoker, :except => [:index, :new, :create]
   
-  # GET /stokers
-  # GET /stokers.xml
   def index
     @stokers = Stoker.find(:all)
 
@@ -12,31 +10,15 @@ class StokersController < ApplicationController
     end
   end
 
-  # GET /stokers/1
-  # GET /stokers/1.xml
   def show
+    @recent_events = @stoker.events.find(:all, :order => "created_at DESC", :conditions => ["created_at >= ?", Time.now - 2.hours])
+    
     respond_to do |format|
-      format.html # show.html.erb
+      format.html
       format.xml  { render :xml => @stoker }
-      # format.png do
-      #   graph = Scruffy::Graph.new
-      #   graph.title = @stoker.name
-      # 
-      #   event_times = @stoker.events.find(:all, :conditions => ["created_at >= ?", Time.now - 2.hours], :group => "created_at")
-      #   
-      #   @stoker.sensors.each do |s|
-      #     graph.add :line, s.name, s.events.find(:all, :conditions => ["created_at >= ?", Time.now - 2.hours]).collect{|e| e.temp}
-      #   end
-      #   
-      #   graph.point_markers = event_times.collect{|e| e.created_at}
-      #   
-      #   send_data(graph.render(:width => 800, :as => "PNG"), :type => "image/png", :filename => "#{@stoker.name}_graph.png", :disposition => "inline")
-      # end
     end
   end
 
-  # GET /stokers/new
-  # GET /stokers/new.xml
   def new
     @stoker = Stoker.new
 
@@ -46,12 +28,9 @@ class StokersController < ApplicationController
     end
   end
 
-  # GET /stokers/1/edit
   def edit
   end
 
-  # POST /stokers
-  # POST /stokers.xml
   def create
     @stoker = Stoker.new(params[:stoker])
 
@@ -67,8 +46,6 @@ class StokersController < ApplicationController
     end
   end
 
-  # PUT /stokers/1
-  # PUT /stokers/1.xml
   def update
     respond_to do |format|
       if @stoker.update_attributes(params[:stoker])
@@ -82,8 +59,6 @@ class StokersController < ApplicationController
     end
   end
 
-  # DELETE /stokers/1
-  # DELETE /stokers/1.xml
   def destroy
     @stoker.destroy
 
