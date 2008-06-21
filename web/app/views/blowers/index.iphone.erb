@@ -1,0 +1,5 @@
+<ul title="Blowers" selected="true">
+  <% @blowers.each do |blower| -%>
+    <li><%= link_to blower.name, blower, :target => "_self" %></li>
+  <% end -%>
+</ul>

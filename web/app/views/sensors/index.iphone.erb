@@ -1,0 +1,5 @@
+<ul title="Sensors" selected="true">
+  <% @sensors.each do |sensor| -%>
+    <li><%= link_to "#{sensor.name} #{sensor.temp}F", sensor, :target => "_self" %></li>
+  <% end -%>
+</ul>

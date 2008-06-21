@@ -7,6 +7,7 @@ class StokersController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @stokers }
+      format.iphone { render :layout => false }
     end
   end
 
@@ -16,6 +17,7 @@ class StokersController < ApplicationController
     respond_to do |format|
       format.html
       format.xml  { render :xml => @stoker }
+      format.iphone { render :layout => false }
     end
   end
 

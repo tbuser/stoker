@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resource :page
+
   map.resources :cooks
 
   map.resources :events
@@ -42,7 +44,7 @@ ActionController::Routing::Routes.draw do |map|
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
   # map.root :controller => "welcome"
-  map.root :controller => "stokers"
+  map.root :controller => "pages", :action => "show"
 
   # See how all your routes lay out with "rake routes"
 

@@ -7,6 +7,7 @@ class CooksController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @cooks }
+      format.iphone { render :layout => false }
     end
   end
 
@@ -35,6 +36,7 @@ class CooksController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @cook }
+      format.iphone
     end
   end
 

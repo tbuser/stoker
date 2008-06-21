@@ -1,0 +1,5 @@
+<ul title="Stokers" selected="true">
+  <% @stokers.each do |stoker| -%>
+    <li><%= link_to stoker.name, stoker, :target => "_self" %></li>
+  <% end -%>
+</ul>

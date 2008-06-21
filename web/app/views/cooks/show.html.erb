@@ -13,7 +13,7 @@
   </p>
 <% end %>
 
-<div id="graph"><%= graph(@events, "cook") %></div>
+<%= graph(@events, "cook") %>
 
 <p>
   On <%= link_to @cook.stoker.name, @cook.stoker %> started at <%= format_datetime(@cook.start_time) %>

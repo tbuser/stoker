@@ -1,0 +1,5 @@
+<ul title="Cooks" selected="true">
+  <% @cooks.each do |cook| -%>
+    <li><%= link_to cook.name, cook, :target => "_self" %></li>
+  <% end -%>
+</ul>

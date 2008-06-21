@@ -7,6 +7,7 @@ class BlowersController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @blowers }
+      format.iphone { render :layout => false }
     end
   end
 
