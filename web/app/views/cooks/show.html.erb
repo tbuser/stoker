@@ -8,8 +8,8 @@
   <%= submit_tag "Change" %>
 
   <p id="range_select" style="<%= params[:range] == "range" ? "" : "display:none" %>">
-    From: <%= select_datetime params[:start_time].to_time, :prefix => "start" %>
-    To: <%= select_datetime params[:end_time].to_time, :prefix => "end" %>
+    <%= select_datetime params[:start_time].to_time, :prefix => "start" %><br/>
+    <%= select_datetime params[:end_time].to_time, :prefix => "end" %>
   </p>
 <% end %>
 
