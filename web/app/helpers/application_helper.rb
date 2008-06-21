@@ -9,7 +9,7 @@ module ApplicationHelper
   end
 
   def format_time(time, options = {})
-    time.to_time.strftime("%I:%m#{options[:include_seconds] ? ':%S' : ''} %p")
+    time.to_time.strftime("%I:%M#{options[:include_seconds] ? ':%S' : ''} %p")
   end
   
   def format_datetime(time, options = {})
