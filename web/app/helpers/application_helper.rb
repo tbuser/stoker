@@ -16,21 +16,22 @@ module ApplicationHelper
     format_date(time.to_time, options) + ' ' + format_time(time.to_time, options)
   end
   
-  def graph(events, container_name)
-    data_sets = {}
+  def events_to_graph_params(events, container_name)
+    data_sets       = {}
+    data_set_count  = 0
+    data_set_js     = ""
+    data_set_names  = []
 
     events.each do |e|
       data_sets[e.sensor] ||= []
       data_sets[e.sensor] << [e.created_at.to_i, e.temp]
     end
 
-    data_set_count = 0
-    data_set_js = ""
-    data_set_names = []
 
     data_sets.each do |sensor,temps|
-      temps_js = ""
-      temp_strings = []
+      temps_js      = ""
+      temp_strings  = []
+      data_parts_js = []
 
       temps.each do |temp|
         temp_strings << "[#{temp[0]}, #{temp[1]}]"
@@ -39,7 +40,6 @@ module ApplicationHelper
       temps_js = temp_strings.join(", ")
       data_set_js << "d#{data_set_count} = [#{temps_js}];\n    "
 
-      data_parts_js = []
       data_parts_js << "data: d#{data_set_count}"
       data_parts_js << "label: '#{sensor.name} #{sensor.temp}F'"
 
@@ -49,14 +49,26 @@ module ApplicationHelper
 
       data_set_count += 1
     end
-    
-    options = {
+
+    {
       :container_name => container_name,
       :data_set_js => data_set_js,
       :data_set_names => data_set_names
     }
+  end
+  
+  def graph(events, container_name)
+    food_events = events.find_all{|x| x.sensor.alarm != "Fire"}
+    fire_events = events.find_all{|x| x.sensor.alarm == "Fire"}
+      
+    options = []
+    options << events_to_graph_params(food_events, container_name)
+    options << events_to_graph_params(fire_events, container_name)
     
-    render :partial => "/shared/graph", :locals => {:options => options}
+    options[0][:type] = "Food"
+    options[1][:type] = "Fire"
+    
+    render :partial => "/shared/graphs", :locals => {:options => options}
   end
 
 end

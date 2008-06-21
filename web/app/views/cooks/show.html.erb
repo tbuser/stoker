@@ -1,14 +1,19 @@
 <h2><%=h @cook.name %></h2>
 
-<% if @recent_food_events.size > 0 -%>
-  <h3>Food</h3>
-  <%= graph(@recent_food_events, "food") %>
-<% end -%>
+<% form_tag cook_path(@cook), :method => :get do %>
+  <%= radio_button_tag :range, "last", params[:range] == "last", :onclick => "$('range_select').hide();" %> Last <%= text_field_tag :hours, params[:hours], :size => "2", :maxlength => "2" %> Hours
+  <%= radio_button_tag :range, "all", params[:range] == "all", :onclick => "$('range_select').hide();" %> All
+  <%= radio_button_tag :range, "range", params[:range] == "range", :onclick => "if ($('range_range').value == 'range'){$('range_select').show();}" %> Range
 
-<% if @recent_fire_events.size > 0 -%>
-  <h3>Fire</h3>
-  <%= graph(@recent_fire_events, "fire") %>
-<% end -%>
+  <%= submit_tag "Change" %>
+
+  <p id="range_select" style="<%= params[:range] == "range" ? "" : "display:none" %>">
+    From: <%= select_datetime params[:start_time].to_time, :prefix => "start" %>
+    To: <%= select_datetime params[:end_time].to_time, :prefix => "end" %>
+  </p>
+<% end %>
+
+<div id="graph"><%= graph(@events, "cook") %></div>
 
 <p>
   On <%= link_to @cook.stoker.name, @cook.stoker %> started at <%= format_datetime(@cook.start_time) %>

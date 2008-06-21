@@ -11,15 +11,24 @@ class CooksController < ApplicationController
   end
 
   def show
-    @recent_food_events = @cook.stoker.events.find(:all,
-      :include => :sensor, 
-      :conditions => ["events.created_at >= ? AND sensors.alarm <> ?", Time.now - 2.hours, "Fire"],
-      :order => "events.created_at DESC"
-    )
+    params[:range] ||= "last"
+    params[:hours] ||= "6"
     
-    @recent_fire_events = @cook.stoker.events.find(:all,
-      :include => :sensor,
-      :conditions => ["events.created_at >= ? AND sensors.alarm = ?", Time.now - 2.hours, "Fire"],
+    case params[:range]
+    when "last"
+      params[:start_time] = Time.now - params[:hours].to_i.hours >= @cook.start_time ? Time.now - params[:hours].to_i.hours : @cook.start_time
+      params[:end_time]   = @cook.end_time.to_s == "" ? Time.now : @cook.end_time
+    when "all"
+      params[:start_time] = @cook.start_time
+      params[:end_time]   = @cook.end_time.to_s == "" ? Time.now : @cook.end_time
+    when "range"
+      params[:start_time] = "#{params[:start][:year]}-#{params[:start][:month]}-#{params[:start][:day]} #{params[:start][:hour]}:#{params[:start][:minute]}".to_time
+      params[:end_time]   = "#{params[:end][:year]}-#{params[:end][:month]}-#{params[:end][:day]} #{params[:end][:hour]}:#{params[:end][:minute]}".to_time
+    end
+    
+    @events = @cook.stoker.events.find(:all,
+      :include => :sensor, 
+      :conditions => ["events.created_at BETWEEN ? AND ?", params[:start_time], params[:end_time]],
       :order => "events.created_at DESC"
     )
     
