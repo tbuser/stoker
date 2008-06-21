@@ -21,4 +21,4 @@
 </p>
 
 <%= link_to 'Edit', edit_blower_path(@blower) %> |
-<%= link_to 'Back', blowers_path %>
+<%= link_to 'Destroy', @blower, :confirm => 'Are you sure?', :method => :delete %>

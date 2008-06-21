@@ -1,30 +1,11 @@
-<h2>Listing cooks</h2>
+<h2>Listing Cooks</h2>
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Stoker</th>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Start time</th>
-    <th>End time</th>
-  </tr>
+<p><%= link_to '+ Add New Cook', new_cook_path %></p>
 
-<% for cook in @cooks %>
-  <tr>
-    <td><%=h cook.name %></td>
-    <td><%= link_to cook.stoker.name, cook.stoker if cook.stoker %></td>
-    <td><%=h cook.name %></td>
-    <td><%=h truncate(cook.description) %></td>
-    <td><%= format_datetime(cook.start_time) %></td>
-    <td><%=h cook.end_time %></td>
-    <td><%= link_to 'Show', cook %></td>
-    <td><%= link_to 'Edit', edit_cook_path(cook) %></td>
-    <td><%= link_to 'Destroy', cook, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<%= link_to 'New cook', new_cook_path %>
+<% @cooks.each do |cook| -%>
+  <p>
+    <%= link_to cook.name, cook %><br/>
+    <%= format_datetime(cook.start_time) %>
+    <%= truncate(cook.description) %>
+  </p>
+<% end -%>

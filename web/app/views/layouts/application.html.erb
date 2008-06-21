@@ -15,23 +15,29 @@
 </head>
 <body>
 
-<h1>Stoker Web</h1>
+<div id="wrapper">
+  <div id="header">
+    <h1>Stoker Web</h1>
+  </div>
 
-<p>
-  <%= link_to_unless_current "Stokers", stokers_path %>
-  <%= link_to_unless_current "Blowers", blowers_path %>
-  <%= link_to_unless_current "Sensors", sensors_path %>
-  <%= link_to_unless_current "Events", events_path %>
-  <%= link_to_unless_current "Cooks", cooks_path %>
-</p>
+  <div id="menu">
+    <%= link_to "Stokers", stokers_path %>
+    <%= link_to "Blowers", blowers_path %>
+    <%= link_to "Sensors", sensors_path %>
+    <%= link_to "Events", events_path %>
+    <%= link_to "Cooks", cooks_path %>
+  </div>
 
-<% for name in [:notice, :warning, :message] -%>
-  <% if flash[name] -%>
-    <%= "<div id=\"#{name}\" class=\"alert\">#{flash[name]}</div>" %>
+  <% for name in [:notice, :warning, :message] -%>
+    <% if flash[name] -%>
+      <%= "<div id=\"#{name}\" class=\"alert\">#{flash[name]}</div>" %>
+    <% end -%>
   <% end -%>
-<% end -%>
 
-<%= yield  %>
+  <div id="content">
+    <%= yield  %>
+  </div>
+</div>
 
 </body>
 </html>

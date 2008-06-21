@@ -1,26 +1,10 @@
-<h2>Listing stokers</h2>
+<h2>Listing Stokers</h2>
 
-<table>
-  <tr>
-    <th>Host</th>
-    <th>Port</th>
-    <th>Name</th>
-    <th>Status</th>
-  </tr>
+<p><%= link_to '+ Add New Stoker', new_stoker_path %></p>
 
 <% for stoker in @stokers %>
-  <tr>
-    <td><%=h stoker.host %></td>
-    <td><%=h stoker.port %></td>
-    <td><%=h stoker.name %></td>
-    <td><%=h stoker.status %></td>
-    <td><%= link_to 'Show', stoker %></td>
-    <td><%= link_to 'Edit', edit_stoker_path(stoker) %></td>
-    <td><%= link_to 'Destroy', stoker, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
+  <p>
+    <%= link_to stoker.name, stoker %> (<span style="<%= stoker.status == "Running" ? "color:green" : "color:red" %>"><%= stoker.status %></span>)
+  </p>
 <% end %>
-</table>
 
-<br />
-
-<%= link_to 'New stoker', new_stoker_path %>

@@ -1,36 +1,15 @@
-<h2>Listing sensors</h2>
+<h2>Listing Sensors</h2>
 
-<table>
-  <tr>
-    <th>Serial number</th>
-    <th>Name</th>
-    <th>Temp</th>
-    <th>Target</th>
-    <th>Alarm</th>
-    <th>Low</th>
-    <th>High</th>
-    <th>Blower</th>
-    <th>Stoker</th>
-  </tr>
+<p><%= link_to '+ Add New Sensor', new_sensor_path %></p>
 
-<% for sensor in @sensors %>
-  <tr>
-    <td><%=h sensor.serial_number %></td>
-    <td><%=h sensor.name %></td>
-    <td><%=h sensor.temp %></td>
-    <td><%=h sensor.target %></td>
-    <td><%=h sensor.alarm %></td>
-    <td><%=h sensor.low %></td>
-    <td><%=h sensor.high %></td>
-    <td><%= link_to sensor.blower.name, sensor.blower if sensor.blower %></td>
-    <td><%= link_to sensor.stoker.name, sensor.stoker if sensor.stoker %></td>
-    <td><%= link_to 'Show', sensor %></td>
-    <td><%= link_to 'Edit', edit_sensor_path(sensor) %></td>
-    <td><%= link_to 'Destroy', sensor, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
+<% @sensors.each do |sensor| -%>
+  <p>
+    <%= link_to sensor.name, sensor %> <%= "(#{link_to sensor.blower.name, sensor.blower})" if sensor.blower %><br/>
+    <%= "#{link_to sensor.stoker.name, sensor.stoker}<br/>" if sensor.stoker %>
+    Temp: <%= sensor.temp %> <%= "Target: #{sensor.target}" unless sensor.target.to_s == "" %>
+    <% if sensor.alarm != "None" -%>
+      Alarm: <%=h sensor.alarm %> <%=h "#{sensor.low}F" unless sensor.low == 32 %> .. <%=h "#{sensor.high}F" unless sensor.high == 32 %>
+    <% end -%>
+  </p>
+<% end -%>
 
-<br />
-
-<%= link_to 'New sensor', new_sensor_path %>

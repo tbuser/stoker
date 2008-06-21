@@ -1,27 +1,10 @@
-<h2>Editing blower</h2>
-
-<%= error_messages_for :blower %>
+<h2>Editing Blower</h2>
 
 <% form_for(@blower) do |f| %>
-  <p>
-    <b>Serial number</b><br />
-    <%= f.text_field :serial_number %>
-  </p>
-
-  <p>
-    <b>Name</b><br />
-    <%= f.text_field :name %>
-  </p>
-
-  <p>
-    <b>Stoker</b><br />
-    <%= f.text_field :stoker_id %>
-  </p>
-
+  <%= render :partial => "form", :locals => {:f => f} %>
+  
   <p>
     <%= f.submit "Update" %>
+    <%= link_to "Cancel", blowers_path %>
   </p>
 <% end %>
-
-<%= link_to 'Show', @blower %> |
-<%= link_to 'Back', blowers_path %>

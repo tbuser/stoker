@@ -1,22 +1,22 @@
 <h2><%=h @stoker.name %></h2>
 
+<%= link_to "Edit", edit_stoker_path(@stoker) %> |
+<%= link_to "Delete", stoker_path(@stoker), :method => :destroy, :confirm => "Are you sure?" %> | 
+<%= link_to_remote "Sync", :url => sync_stoker_path(@stoker), :method => :put, :before => "$('sensors_spinner').show()", :complete => "$('sensors_spinner').hide()" %>
+<%#= link_to "Sync Plain", sync_stoker_path(@stoker), :method => :put %>
+<%= spinner("sensors_spinner") %>
+
 <p>
-  <b>Status:</b>
+  <b>Status</b>
   <%=h @stoker.status %> <%= link_to "Run", run_stoker_path(@stoker), :method => :put unless @stoker.status == "Running" %>
 </p>
 
 <p>
-  <b>Host:</b>
+  <b>Host</b>
   <%= link_to @stoker.host_url, @stoker.host_url %>
 </p>
 
 <%= graph(@recent_events, "recent_events") %>
-
-<%= link_to 'Edit', edit_stoker_path(@stoker) %> |
-
-<%= link_to_remote "Sync", :url => sync_stoker_path(@stoker), :method => :put, :before => "$('sensors_spinner').show()", :complete => "$('sensors_spinner').hide()" %>
-<%#= link_to "Sync Plain", sync_stoker_path(@stoker), :method => :put %>
-<%= spinner("sensors_spinner") %>
 
 <div id="sensors">
   <%= render :partial => "sensors" %>

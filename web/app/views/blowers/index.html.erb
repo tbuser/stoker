@@ -1,26 +1,9 @@
-<h2>Listing blowers</h2>
+<h2>Listing Blowers</h2>
 
-<table>
-  <tr>
-    <th>Serial number</th>
-    <th>Name</th>
-    <th>Sensor</th>
-    <th>Stoker</th>
-  </tr>
+<p><%= link_to '+ Add New Blower', new_blower_path %></p>
 
-<% for blower in @blowers %>
-  <tr>
-    <td><%=h blower.serial_number %></td>
-    <td><%=h blower.name %></td>
-    <td><%= link_to blower.sensor.name, blower.sensor if blower.sensor %></td>
-    <td><%= link_to blower.stoker.name, blower.stoker if blower.stoker %></td>
-    <td><%= link_to 'Show', blower %></td>
-    <td><%= link_to 'Edit', edit_blower_path(blower) %></td>
-    <td><%= link_to 'Destroy', blower, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
-
-<br />
-
-<%= link_to 'New blower', new_blower_path %>
+<% @blowers.each do |blower| -%>
+  <p>
+    <%= link_to blower.name, blower %>
+  </p>
+<% end -%>
