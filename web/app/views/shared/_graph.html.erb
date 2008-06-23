@@ -1,23 +1,51 @@
 <h3><%= options[:type] %></h3>
 
-<%= javascript_tag ("
-  document.observe('dom:loaded', function() {
-    #{options[:data_set_js]}
-
-    var f = Flotr.draw(
-      $('#{options[:container_name]}_#{options[:type]}_graph'),
-      [#{options[:data_set_names].join(", ")}],
-      { 
-        yaxis:  { autoscaleMargin: 3 },
-        lines:  { show: true },
-        points: { show: false, radius: 3, fill: true, fillColor: '#FFFFFF' },
-        xaxis:  { tickFormatter: hmsTickFormatter },
-        legend: { position: 'nw', backgroundColor: '#D2E8FF' },
-        mouse:  { track: true, position: 'se', color: '#000000', margin: 5, sensibility: 10, radius: 2, trackDecimals: 0, trackFormatter: hmsTrackFormatter }
-      }
-    );
-  });			
-") %>
-
 <div id="<%= options[:container_name] %>_<%= options[:type] %>_graph" style="width:600px;height:300px;margin-left:auto;margin-right:auto;"></div>
 <!-- <%= button_to_function "Save Image", "saveImage('#{options[:container_name]}');" %><br/> -->
+<%= button_to_function "Reset Zoom", "draw_#{options[:container_name]}_#{options[:type]}_graph();", :style => "float:right;" %>
+
+<%= javascript_tag ("
+  document.observe('dom:loaded', function() {
+    draw_#{options[:container_name]}_#{options[:type]}_graph();
+  });
+
+  var options = { 
+    yaxis:    { autoscaleMargin: 3 },
+    lines:    { show: true },
+    points:   { show: false, radius: 3, fill: true, fillColor: '#FFFFFF' },
+    xaxis:    { tickFormatter: hmsTickFormatter },
+    legend:   { position: 'nw', backgroundColor: '#D2E8FF' },
+    mouse:    { track: true, position: 'se', color: 'purple', margin: 5, sensibility: 10, radius: 2, trackDecimals: 0, trackFormatter: hmsTrackFormatter },
+    selection:{ mode:'xy' }
+  };
+
+  function draw_#{options[:container_name]}_#{options[:type]}_graph(opts) {
+    #{options[:data_set_js]}
+
+    var o = Object.extend(Object.clone(options), opts || {});
+    
+    return Flotr.draw(
+      $('#{options[:container_name]}_#{options[:type]}_graph'),
+      [#{options[:data_set_names].join(", ")}],
+      o
+    );
+  }
+  
+  $('#{options[:container_name]}_#{options[:type]}_graph').observe('flotr:select', function(evt){
+  	/**
+  	 * Get the selected area coordinates passed as event memo.
+  	 */
+  	var area = evt.memo[0];
+
+  	/**
+  	 * What happens: empty the container element, and draw a new 
+  	 * graph with bounded axis. The axis correspond to the selection
+  	 * you just made.
+  	 */
+  	f = draw_#{options[:container_name]}_#{options[:type]}_graph({
+  		xaxis: {min:area.x1, max:area.x2},
+  		yaxis: {min:area.y1, max:area.y2}						
+  	});
+  });
+") %>
+  
