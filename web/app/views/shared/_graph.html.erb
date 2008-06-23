@@ -2,7 +2,10 @@
 
 <div id="<%= options[:container_name] %>_<%= options[:type] %>_graph" style="width:600px;height:300px;margin-left:auto;margin-right:auto;"></div>
 <!-- <%= button_to_function "Save Image", "saveImage('#{options[:container_name]}');" %><br/> -->
-<%= button_to_function "Reset Zoom", "draw_#{options[:container_name]}_#{options[:type]}_graph();", :style => "float:right;" %>
+<div style="float:right">
+  Click and drag inside graph to zoom in
+  <%= button_to_function "Reset Zoom", "draw_#{options[:container_name]}_#{options[:type]}_graph();" %>
+</div>
 
 <%= javascript_tag ("
   document.observe('dom:loaded', function() {
@@ -48,4 +51,5 @@
   	});
   });
 ") %>
-  
+
+<br style="clear:both"/>
