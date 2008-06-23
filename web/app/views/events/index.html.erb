@@ -1,28 +1,16 @@
-<h2>Listing events</h2>
+<h2>Listing Events</h2>
 
-<table>
-  <tr>
-    <th>Time</th>
-    <th>Stoker</th>
-    <th>Sensor</th>
-    <th>Temp</th>
-  </tr>
+<p><%= link_to '+ Add New Event', new_event_path %></p>
 
 <% for event in @events %>
-  <tr>
-    <td><%= format_datetime(event.created_at) %></td>
-    <td><%= link_to event.stoker.name, event.stoker %></td>
-    <td><%= link_to event.sensor.name, event.sensor %></td>
-    <td><%=h event.temp %></td>
-    <td><%= link_to 'Show', event %></td>
-    <td><%= link_to 'Edit', edit_event_path(event) %></td>
-    <td><%= link_to 'Destroy', event, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
+  <p>
+    <%= link_to format_datetime(event.created_at), event %>
+    <%= link_to event.stoker.name, event.stoker %>
+    <%= link_to event.sensor.name, event.sensor %>
+    <%=h event.temp %>F
+  </p>
 <% end %>
-</table>
-
-<br />
 
 <%= will_paginate @events %>
 
-<%= link_to 'New event', new_event_path %>
+

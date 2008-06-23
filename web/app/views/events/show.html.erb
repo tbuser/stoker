@@ -1,6 +1,10 @@
 <h2><%=h @event.sensor.name %> Event</h2>
 
 <p>
+  <%= link_to 'Edit', edit_event_path(@event) %>
+</p>
+
+<p>
   <b>Stoker:</b>
   <%= link_to @event.stoker.name, @event.stoker %>
 </p>
@@ -14,6 +18,3 @@
   <b>Time:</b>
   <%= format_datetime(@event.created_at) %>
 </p>
-
-<%= link_to 'Edit', edit_event_path(@event) %> |
-<%= link_to 'Back', events_path %>

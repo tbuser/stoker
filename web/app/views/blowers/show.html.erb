@@ -1,6 +1,11 @@
 <h2><%=h @blower.name %></h2>
 
 <p>
+  <%= link_to 'Edit', edit_blower_path(@blower) %> |
+  <%= link_to 'Delete', @blower, :confirm => 'Are you sure?', :method => :delete %>
+</p>
+
+<p>
   <b>Serial number:</b>
   <%=h @blower.serial_number %>
 </p>
@@ -19,6 +24,3 @@
   <b>Last Updated:</b>
   <%= format_datetime(@blower.updated_at) %>
 </p>
-
-<%= link_to 'Edit', edit_blower_path(@blower) %> |
-<%= link_to 'Destroy', @blower, :confirm => 'Are you sure?', :method => :delete %>

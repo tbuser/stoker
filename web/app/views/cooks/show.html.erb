@@ -1,12 +1,17 @@
 <h2><%=h @cook.name %></h2>
 
 <p>
-  On <%= link_to @cook.stoker.name, @cook.stoker %> started at <%= format_datetime(@cook.start_time) %>
-  <%= "- #{format_datetime(@cook.end_time)}" if @cook.end_time.to_s != "" %>
+  <%= link_to 'Edit', edit_cook_path(@cook) %> |
+  <%= link_to 'Delete', @cook, :confirm => 'Are you sure?', :method => :delete %> | 
+  <%= cook_status(@cook) %>
+  <% if @cook.running? -%>
+    <%= link_to "Stop", stop_cook_path(@cook), :method => :put %>
+  <% end -%>
 </p>
 
 <p>
-  <%= link_to 'Edit', edit_cook_path(@cook) %> | <%= @cook.running? ? "Running" : "Not Running" %>
+  On <%= link_to @cook.stoker.name, @cook.stoker %> started at <%= format_datetime(@cook.start_time) %>
+  <%= "- #{format_datetime(@cook.end_time)}" if @cook.end_time.to_s != "" %>
 </p>
 
 <% form_tag cook_path(@cook), :method => :get do %>

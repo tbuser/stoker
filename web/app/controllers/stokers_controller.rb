@@ -23,7 +23,8 @@ class StokersController < ApplicationController
 
   def new
     @stoker = Stoker.new
-
+    @stoker.port = 80
+    
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @stoker }

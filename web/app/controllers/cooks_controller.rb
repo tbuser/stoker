@@ -90,6 +90,23 @@ class CooksController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  def stop
+    @cook.end_time = Time.now
+    
+    respond_to do |format|
+      if @cook.save
+        flash[:notice] = 'Cook has finished.'
+        format.html { redirect_to(@cook) }
+        format.xml { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml { render :xml => @cook.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  private
   
   def find_cook
     @cook = Cook.find(params[:id])

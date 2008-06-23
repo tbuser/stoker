@@ -1,6 +1,11 @@
 <h2><%= @sensor.name %></h2>
 
 <p>
+  <%= link_to 'Edit', edit_sensor_path(@sensor) %> |
+  <%= link_to 'Delete', @sensor, :confirm => 'Are you sure?', :method => :delete %>
+</p>
+
+<p>
   <b>Serial number:</b>
   <%=h @sensor.serial_number %>
 </p>
@@ -39,6 +44,3 @@
   <b>Last Updated:</b>
   <%= format_datetime(@sensor.updated_at) %>
 </p>
-
-<%= link_to 'Edit', edit_sensor_path(@sensor) %> |
-<%= link_to 'Destroy', @sensor, :confirm => 'Are you sure?', :method => :delete %>

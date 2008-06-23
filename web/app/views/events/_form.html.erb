@@ -1,0 +1,21 @@
+<%= error_messages_for :event %>
+
+<p>
+  <b>Stoker</b><br />
+  <%= f.collection_select :stoker_id, Stoker.find(:all), :id, :name %>
+</p>
+
+<p>
+  <b>Sensor</b><br />
+  <%= f.collection_select :sensor_id, Sensor.find(:all), :id, :name %>
+</p>
+
+<p>
+  <b>Temp</b><br />
+  <%= f.text_field :temp %>
+</p>
+
+<p>
+  <b>Time</b><br />
+  <%= f.datetime_select :created_at %>
+</p>

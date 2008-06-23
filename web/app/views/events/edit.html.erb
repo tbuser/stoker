@@ -1,27 +1,10 @@
-<h2>Editing event</h2>
-
-<%= error_messages_for :event %>
+<h2>Editing Event</h2>
 
 <% form_for(@event) do |f| %>
-  <p>
-    <b>Stoker</b><br />
-    <%= f.text_field :stoker_id %>
-  </p>
-
-  <p>
-    <b>Sensor</b><br />
-    <%= f.text_field :sensor_id %>
-  </p>
-
-  <p>
-    <b>Temp</b><br />
-    <%= f.text_field :temp %>
-  </p>
+  <%= render :partial => "form", :locals => {:f => f} %>
 
   <p>
     <%= f.submit "Update" %>
+    <%= link_to "Cancel", events_path %>
   </p>
 <% end %>
-
-<%= link_to 'Show', @event %> |
-<%= link_to 'Back', events_path %>

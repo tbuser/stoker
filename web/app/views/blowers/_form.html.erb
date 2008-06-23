@@ -12,5 +12,5 @@
 
 <p>
   <b>Stoker</b><br />
-  <%= f.text_field :stoker_id %>
+  <%= f.collection_select :stoker_id, Stoker.find(:all), :id, :name %>
 </p>
