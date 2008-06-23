@@ -12,7 +12,7 @@ class CooksController < ApplicationController
   end
 
   def show
-    params[:range] ||= "last"
+    params[:range] ||= @cook.end_time.to_s != "" ? "all" : "last"
     params[:hours] ||= "6"
     
     case params[:range]
