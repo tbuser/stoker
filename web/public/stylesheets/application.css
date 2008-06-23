@@ -64,6 +64,11 @@ body {
   margin-right: 20px;
 }
 
+#menu a.about {
+  float:right;
+  margin-right: 0px;
+}
+
 #content {
   padding-top: 0px;
   padding-left: 10px;

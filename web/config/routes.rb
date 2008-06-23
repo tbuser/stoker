@@ -1,5 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resource :page
+  map.resource :page, :member => {:about => :get}
 
   map.resources :cooks
 

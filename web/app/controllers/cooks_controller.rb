@@ -12,16 +12,17 @@ class CooksController < ApplicationController
   end
 
   def show
-    params[:range] ||= @cook.end_time.to_s != "" ? "all" : "last"
+    params[:range] ||= @cook.running? ? "last" : "all"
     params[:hours] ||= "6"
     
     case params[:range]
     when "last"
-      params[:start_time] = Time.now - params[:hours].to_i.hours >= @cook.start_time ? Time.now - params[:hours].to_i.hours : @cook.start_time
-      params[:end_time]   = @cook.end_time.to_s == "" ? Time.now : @cook.end_time
+      current_time = @cook.running? ? Time.now : @cook.end_time
+      params[:start_time] = current_time - params[:hours].to_i.hours >= @cook.start_time ? current_time - params[:hours].to_i.hours : @cook.start_time
+      params[:end_time]   = current_time
     when "all"
       params[:start_time] = @cook.start_time
-      params[:end_time]   = @cook.end_time.to_s == "" ? Time.now : @cook.end_time
+      params[:end_time]   = @cook.running? ? Time.now : @cook.end_time
     when "range"
       params[:start_time] = "#{params[:start][:year]}-#{params[:start][:month]}-#{params[:start][:day]} #{params[:start][:hour]}:#{params[:start][:minute]}".to_time
       params[:end_time]   = "#{params[:end][:year]}-#{params[:end][:month]}-#{params[:end][:day]} #{params[:end][:hour]}:#{params[:end][:minute]}".to_time
