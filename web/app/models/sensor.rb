@@ -5,6 +5,7 @@ class Sensor < ActiveRecord::Base
   belongs_to :blower
   
   has_many :events
+  has_many :adjustments
   
   validates_presence_of :serial_number, :name, :alarm
   validates_inclusion_of :alarm, :in => ALARMS
@@ -45,6 +46,23 @@ class Sensor < ActiveRecord::Base
         end          
       end
     end
+  end
+
+  def alarm_status
+    alarm_status = "black"
+    
+    if ["fire","food"].include?(self.alarm.downcase)
+      alarm_status = case self.temp
+      when 0..self.low
+        "green"
+      when self.low..self.high-1
+        "yellow"
+      else
+        "red"
+      end
+    end
+    
+    alarm_status
   end
   
 end

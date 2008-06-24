@@ -61,12 +61,8 @@ body {
 }
 
 #menu a {
-  margin-right: 20px;
-}
-
-#menu a.about {
-  float:right;
-  margin-right: 0px;
+/*  margin-right: 20px;*/
+  padding: 10px;
 }
 
 #content {
@@ -74,4 +70,41 @@ body {
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 10px;
+}
+
+table {
+  border-spacing: 10px;
+}
+
+th {
+  text-align: left;
+  border-bottom: 1px solid lightgray;
+}
+
+th.number, td.number {
+  text-align: right;
+}
+
+tr.black_alarm td {
+  color: black;
+}
+
+tr.green_alarm td {
+  color: green;
+}
+
+tr.yellow_alarm td {
+  color: goldenrod;
+}
+
+tr.red_alarm td {
+  color: red;
+}
+
+a img {
+  border: 0;
+}
+
+img {
+  vertical-align: middle;
 }

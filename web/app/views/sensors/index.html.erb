@@ -1,15 +1,5 @@
 <h2>Listing Sensors</h2>
 
-<p><%= link_to '+ Add New Sensor', new_sensor_path %></p>
+<p><%= link_to image_tag("add.png") + ' Add New Sensor', new_sensor_path %></p>
 
-<% @sensors.each do |sensor| -%>
-  <p>
-    <%= link_to sensor.name, sensor %> <%= "(#{link_to sensor.blower.name, sensor.blower})" if sensor.blower %><br/>
-    <%= "#{link_to sensor.stoker.name, sensor.stoker}<br/>" if sensor.stoker %>
-    Temp: <%= sensor.temp %> <%= "Target: #{sensor.target}" unless sensor.target.to_s == "" %>
-    <% if sensor.alarm != "None" -%>
-      Alarm: <%=h sensor.alarm %> <%=h "#{sensor.low}F" unless sensor.low == 32 %> .. <%=h "#{sensor.high}F" unless sensor.high == 32 %>
-    <% end -%>
-  </p>
-<% end -%>
-
+<%= render :partial => "list", :locals => {:sensors => @sensors} %>

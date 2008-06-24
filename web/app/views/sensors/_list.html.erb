@@ -1,0 +1,16 @@
+<% cook ||= nil %>
+
+<table width="100%">
+  <tr>
+    <th>Sensor</th>
+    <th class="number">Temp</th>
+    <th class="number">Target</th>
+    <th>Alarm</th>
+    <th class="number">Low</th>
+    <th class="number">High</th>
+    <th>Blower</th>
+  </tr>
+  <div id="sensors">
+    <%= render :partial => "/sensors/sensor", :collection => sensors, :locals => {:cook => cook} %>
+  </div>
+</table>

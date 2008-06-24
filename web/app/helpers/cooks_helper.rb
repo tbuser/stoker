@@ -6,7 +6,9 @@ module CooksHelper
     when "Running"
       '<span style="color:green">Running</span>'
     when "Finished"
-      'Finished'
+      '<strong><em>Finished</em></strong>'
+    else
+      '<span style="color:red">Unknown</span>'
     end
   end
 end

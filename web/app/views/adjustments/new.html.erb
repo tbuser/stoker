@@ -1,0 +1,43 @@
+<h1>New adjustment</h1>
+
+<% form_for(@adjustment) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :cook_id %><br />
+    <%= f.text_field :cook_id %>
+  </p>
+  <p>
+    <%= f.label :sensor_id %><br />
+    <%= f.text_field :sensor_id %>
+  </p>
+  <p>
+    <%= f.label :target %><br />
+    <%= f.text_field :target %>
+  </p>
+  <p>
+    <%= f.label :alarm %><br />
+    <%= f.text_field :alarm %>
+  </p>
+  <p>
+    <%= f.label :low %><br />
+    <%= f.text_field :low %>
+  </p>
+  <p>
+    <%= f.label :high %><br />
+    <%= f.text_field :high %>
+  </p>
+  <p>
+    <%= f.label :blower_id %><br />
+    <%= f.text_field :blower_id %>
+  </p>
+  <p>
+    <%= f.label :note %><br />
+    <%= f.text_area :note %>
+  </p>
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', adjustments_path %>

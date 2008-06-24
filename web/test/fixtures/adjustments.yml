@@ -1,0 +1,21 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  cook_id: 1
+  sensor_id: 1
+  target: 1
+  alarm: MyString
+  low: 1
+  high: 1
+  blower_id: 1
+  note: MyText
+
+two:
+  cook_id: 1
+  sensor_id: 1
+  target: 1
+  alarm: MyString
+  low: 1
+  high: 1
+  blower_id: 1
+  note: MyText

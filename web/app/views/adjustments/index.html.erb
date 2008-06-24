@@ -1,0 +1,34 @@
+<h1>Listing adjustments</h1>
+
+<table>
+  <tr>
+    <th>Cook</th>
+    <th>Sensor</th>
+    <th>Target</th>
+    <th>Alarm</th>
+    <th>Low</th>
+    <th>High</th>
+    <th>Blower</th>
+    <th>Note</th>
+  </tr>
+
+<% for adjustment in @adjustments %>
+  <tr>
+    <td><%=h adjustment.cook_id %></td>
+    <td><%=h adjustment.sensor_id %></td>
+    <td><%=h adjustment.target %></td>
+    <td><%=h adjustment.alarm %></td>
+    <td><%=h adjustment.low %></td>
+    <td><%=h adjustment.high %></td>
+    <td><%=h adjustment.blower_id %></td>
+    <td><%=h adjustment.note %></td>
+    <td><%= link_to 'Show', adjustment %></td>
+    <td><%= link_to 'Edit', edit_adjustment_path(adjustment) %></td>
+    <td><%= link_to 'Destroy', adjustment, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New adjustment', new_adjustment_path %>

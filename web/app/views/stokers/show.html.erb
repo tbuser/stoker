@@ -1,8 +1,9 @@
 <h2><%=h @stoker.name %></h2>
 
+<%= link_to image_tag("delete.png") + " Delete", stoker_path(@stoker), :method => :delete, :confirm => "Are you sure?", :style => "float:right;" %>
+
 <p>
-  <%= link_to "Edit", edit_stoker_path(@stoker) %> |
-  <%= link_to "Delete", stoker_path(@stoker), :method => :delete, :confirm => "Are you sure?" %> | 
+  <%= link_to image_tag("pencil.png") + " Edit", edit_stoker_path(@stoker) %> |
   <%= link_to_remote "Sync", :url => sync_stoker_path(@stoker), :method => :put, :before => "$('sensors_spinner').show()", :complete => "$('sensors_spinner').hide()" %>
   <%#= link_to "Sync Plain", sync_stoker_path(@stoker), :method => :put %>
   <%= spinner("sensors_spinner") %>
@@ -18,8 +19,6 @@
   <%= link_to @stoker.host_url, @stoker.host_url %>
 </p>
 
-<%= graph(@recent_events, "recent_events") %>
+<%= render :partial => "/sensors/list", :locals => {:sensors => @stoker.sensors} %>
 
-<div id="sensors">
-  <%= render :partial => "sensors" %>
-</div>
+<%= graph(@recent_events, "recent_events") %>

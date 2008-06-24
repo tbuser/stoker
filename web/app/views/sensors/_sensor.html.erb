@@ -1,0 +1,17 @@
+<tr class="<%= sensor.alarm_status %>_alarm">
+  <td>
+    <%= link_to image_tag("pencil.png"), new_adjustment_path(:sensor_id => sensor.id, :cook_id => cook.id) if cook %>
+    <%= link_to sensor.name, sensor %>
+  </td>
+  <td class="number"><%= sensor.temp %>F</td>
+  <td class="number">
+    <% if sensor.target > 0 -%>
+      <%= image_tag("tick.png") if sensor.temp >= sensor.target %>
+      <%= "#{sensor.target}F" %>
+    <% end %>
+  </td>
+  <td><%= sensor.alarm unless sensor.alarm == "None" %></td>
+  <td class="number"><%= "#{sensor.low}F" if sensor.low > 32 %></td>
+  <td class="number"><%= "#{sensor.high}F" if sensor.high > 32 %></td>
+  <td><%= link_to sensor.blower.name, sensor.blower if sensor.blower %></td>
+</div>

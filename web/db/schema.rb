@@ -9,7 +9,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080624151103) do
+ActiveRecord::Schema.define(:version => 20080624192005) do
+
+  create_table "adjustments", :force => true do |t|
+    t.integer  "cook_id"
+    t.integer  "sensor_id"
+    t.integer  "target"
+    t.string   "alarm"
+    t.integer  "low"
+    t.integer  "high"
+    t.integer  "blower_id"
+    t.text     "note"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "adjustments", ["blower_id"], :name => "index_adjustments_on_blower_id"
+  add_index "adjustments", ["sensor_id"], :name => "index_adjustments_on_sensor_id"
+  add_index "adjustments", ["cook_id"], :name => "index_adjustments_on_cook_id"
 
   create_table "blowers", :force => true do |t|
     t.string   "serial_number"

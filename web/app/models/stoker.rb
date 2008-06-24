@@ -3,6 +3,7 @@ class Stoker < ActiveRecord::Base
   has_many :blowers
   has_many :events
   has_many :cooks
+  has_many :adjustments, :through => :cooks
   
   validates_presence_of :host, :port, :name
   validates_uniqueness_of :name

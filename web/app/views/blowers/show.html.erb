@@ -1,8 +1,9 @@
 <h2><%=h @blower.name %></h2>
 
+<%= link_to image_tag("delete.png") + ' Delete', @blower, :confirm => 'Are you sure?', :method => :delete, :style => "float:right;" %>
+
 <p>
-  <%= link_to 'Edit', edit_blower_path(@blower) %> |
-  <%= link_to 'Delete', @blower, :confirm => 'Are you sure?', :method => :delete %>
+  <%= link_to image_tag("pencil.png") + ' Edit', edit_blower_path(@blower) %>  
 </p>
 
 <p>
