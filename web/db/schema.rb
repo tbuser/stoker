@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080619025459) do
+ActiveRecord::Schema.define(:version => 20080624151103) do
 
   create_table "blowers", :force => true do |t|
     t.string   "serial_number"
@@ -18,6 +18,10 @@ ActiveRecord::Schema.define(:version => 20080619025459) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "blowers", ["stoker_id"], :name => "index_blowers_on_stoker_id"
+  add_index "blowers", ["name"], :name => "index_blowers_on_name"
+  add_index "blowers", ["serial_number"], :name => "index_blowers_on_serial_number"
 
   create_table "cooks", :force => true do |t|
     t.string   "name"
@@ -29,13 +33,24 @@ ActiveRecord::Schema.define(:version => 20080619025459) do
     t.datetime "updated_at"
   end
 
+  add_index "cooks", ["end_time"], :name => "index_cooks_on_end_time"
+  add_index "cooks", ["start_time"], :name => "index_cooks_on_start_time"
+  add_index "cooks", ["name"], :name => "index_cooks_on_name"
+  add_index "cooks", ["stoker_id"], :name => "index_cooks_on_stoker_id"
+
   create_table "events", :force => true do |t|
     t.integer  "stoker_id"
     t.integer  "sensor_id"
     t.integer  "temp"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "alarm",      :default => "None"
   end
+
+  add_index "events", ["alarm"], :name => "index_events_on_alarm"
+  add_index "events", ["created_at"], :name => "index_events_on_created_at"
+  add_index "events", ["sensor_id"], :name => "index_events_on_sensor_id"
+  add_index "events", ["stoker_id"], :name => "index_events_on_stoker_id"
 
   create_table "sensors", :force => true do |t|
     t.string   "serial_number"
@@ -50,6 +65,12 @@ ActiveRecord::Schema.define(:version => 20080619025459) do
     t.datetime "updated_at"
   end
 
+  add_index "sensors", ["alarm"], :name => "index_sensors_on_alarm"
+  add_index "sensors", ["blower_id"], :name => "index_sensors_on_blower_id"
+  add_index "sensors", ["stoker_id"], :name => "index_sensors_on_stoker_id"
+  add_index "sensors", ["name"], :name => "index_sensors_on_name"
+  add_index "sensors", ["serial_number"], :name => "index_sensors_on_serial_number"
+
   create_table "stokers", :force => true do |t|
     t.string   "host"
     t.integer  "port"
@@ -57,5 +78,7 @@ ActiveRecord::Schema.define(:version => 20080619025459) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "stokers", ["name"], :name => "index_stokers_on_name"
 
 end

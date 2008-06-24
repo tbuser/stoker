@@ -104,8 +104,8 @@ module ApplicationHelper
   end
   
   def graph(events, container_name)
-    food_events = events.find_all{|x| x.sensor.alarm != "Fire"}
-    fire_events = events.find_all{|x| x.sensor.alarm == "Fire"}
+    food_events = events.find_all{|x| x.alarm != "Fire"}
+    fire_events = events.find_all{|x| x.alarm == "Fire"}
       
     options = []
     options << events_to_graph_params(food_events, container_name)
