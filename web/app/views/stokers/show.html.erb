@@ -19,6 +19,8 @@
   <%= link_to @stoker.host_url, @stoker.host_url %>
 </p>
 
-<%= render :partial => "/sensors/list", :locals => {:sensors => @stoker.sensors} %>
+<div id="sensors">
+  <%= render :partial => "/sensors/list", :locals => {:sensors => @stoker.sensors} %>
+</div>
 
 <%= graph(@recent_events, "recent_events") %>
