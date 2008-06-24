@@ -4,7 +4,7 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
-  before_filter :authenticate, :except => [ :index, :show ]
+  before_filter :authenticate, :except => [ :index, :show, :about ]
   before_filter :adjust_format_for_iphone
   
   # See ActionController::RequestForgeryProtection for details
