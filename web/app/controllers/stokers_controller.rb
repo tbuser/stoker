@@ -128,7 +128,8 @@ class StokersController < ApplicationController
           sleep 10
         end
         
-        status = Sys::ProcTable.ps(child.handle).empty? ? "stopped" : "running"
+        # status = Sys::ProcTable.ps(child.handle).empty? ? "stopped" : "running"
+        status = "grr"
         
         format.js do
           render :update do |page|
