@@ -1,15 +1,15 @@
 #!/usr/bin/env ruby
 # TODO: make this into a proper testing framework  :)
 
-$TEST = false
+$TEST = true
 $TEST_HTML = File.open("tests/test1.html")
-$TEST_TELNET = File.open("tests/telnet.txt")
 
 require "lib/stoker"
 
-stoker = Net::Stoker.new("10.1.1.8")
+stoker = Net::Stoker.new("10.1.1.8", :connection => "socket")
 
-stoker.read_sensors
+puts "Getting data..."
+stoker.get
 
 puts "Listing blowers:"
 stoker.blowers.each do |blower|
@@ -21,12 +21,33 @@ stoker.sensors.each do |sensor|
   puts "#{sensor.serial_number}, #{sensor.name}, #{sensor.temp}, #{sensor.target}, #{sensor.alarm}, #{sensor.low}, #{sensor.high}, #{sensor.blower.name rescue ''}"
 end
 
-puts "Red: #{stoker.sensor("Red").temp}"
-puts "9C00001195DEE430: #{stoker.sensor("9C00001195DEE430").name}"
-puts "Pit Temp Blower: #{stoker.sensor("pit temp").blower.name}"
+sensor = stoker.sensors[0]
+name = sensor.name
+serial_number = sensor.serial_number
 
-puts "Fan Sensor: #{stoker.blower("Fan").sensor.name}"
-puts "140000002AA65105: #{stoker.blower("140000002AA65105").name}"
+puts "#{serial_number} was #{name} changing to Test"
+sensor.name = "Test"
+
+puts "Getting data..."
+stoker.get
+
+sensor = stoker.sensor(serial_number)
+puts "#{sensor.serial_number} is now #{sensor.name} changing back to #{name}"
+sensor.name = name
+
+puts "Getting data..."
+stoker.get
+
+sensor = stoker.sensor(serial_number)
+puts "#{sensor.serial_number} is now back to #{sensor.name}"
+
+# 
+# puts "Red: #{stoker.sensor("Red").temp}"
+# puts "9C00001195DEE430: #{stoker.sensor("9C00001195DEE430").name}"
+# puts "Pit Temp Blower: #{stoker.sensor("pit temp").blower.name}"
+# 
+# puts "Fan Sensor: #{stoker.blower("Fan").sensor.name}"
+# puts "140000002AA65105: #{stoker.blower("140000002AA65105").name}"
 
 # stoker.sensor("Red").update_attributes :name => "Rouge", :target => 123, :blower => stoker.blower("Fan")
 # stoker.sensor("Red").update_attributes :name => "Rouge", :target => "100"
