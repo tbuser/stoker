@@ -21,25 +21,25 @@ stoker.sensors.each do |sensor|
   puts "#{sensor.serial_number}, #{sensor.name}, #{sensor.temp}, #{sensor.target}, #{sensor.alarm}, #{sensor.low}, #{sensor.high}, #{sensor.blower.name rescue ''}"
 end
 
-sensor = stoker.sensors[0]
-name = sensor.name
-serial_number = sensor.serial_number
-
-puts "#{serial_number} was #{name} changing to Test"
-sensor.name = "Test"
-
-puts "Getting data..."
-stoker.get
-
-sensor = stoker.sensor(serial_number)
-puts "#{sensor.serial_number} is now #{sensor.name} changing back to #{name}"
-sensor.name = name
-
-puts "Getting data..."
-stoker.get
-
-sensor = stoker.sensor(serial_number)
-puts "#{sensor.serial_number} is now back to #{sensor.name}"
+# sensor = stoker.sensors[0]
+# name = sensor.name
+# serial_number = sensor.serial_number
+# 
+# puts "#{serial_number} was #{name} changing to Test"
+# sensor.name = "Test"
+# 
+# puts "Getting data..."
+# stoker.get
+# 
+# sensor = stoker.sensor(serial_number)
+# puts "#{sensor.serial_number} is now #{sensor.name} changing back to #{name}"
+# sensor.name = name
+# 
+# puts "Getting data..."
+# stoker.get
+# 
+# sensor = stoker.sensor(serial_number)
+# puts "#{sensor.serial_number} is now back to #{sensor.name}"
 
 # 
 # puts "Red: #{stoker.sensor("Red").temp}"

@@ -47,13 +47,6 @@ module Net
       @blowers = []
       
       if @connection == "socket"
-        warn "Connecting to #{@host} on port #{@port}"
-        @socket = Net::Telnet.new("Host" => @host, "Port" => @port, "Timeout" => @timeout, "Prompt" => /ok\:0/)
-        @socket.cmd("op=#{@output_port}")
-        
-        warn "Connecting to #{@host} on port #{@output_port}"
-        @output_socket = Net::Telnet.new("Host" => @host, "Port" => @output_port, "Timeout" => @timeout)
-
         warn "Connecting to #{@host} on port #{@telnet_port}"
         @telnet = Net::Telnet.new(
           "Host" => @host, 
@@ -70,25 +63,32 @@ module Net
         @telnet.cmd @pass
         
         restart_bbq
+
+        warn "Connecting to #{@host} on port #{@port}"
+        @socket = Net::Telnet.new("Host" => @host, "Port" => @port, "Timeout" => @timeout, "Prompt" => /ok\:0/)
+        @socket.cmd("op=#{@output_port}")
+        
+        warn "Connecting to #{@host} on port #{@output_port}"
+        @output_socket = Net::Telnet.new("Host" => @host, "Port" => @output_port, "Timeout" => @timeout)
       end
     end
 
     # For use with socket connection, this restarts the stoker's internal bbq process so that it will
     # stream the temp data to the output socket.
     def restart_bbq(state = "-t")
-      warn "Killing bbq process" if $TEST      
+      warn "Killing bbq process"      
       response = @telnet.cmd("bbq -k")
       raise "Failed to kill bbq process" unless response =~ /stkcmd: stop/ or response =~ /stkcmd: not started/
-      sleep 2
       
-      warn "Collecting garbage on stoker" if $TEST
+      warn "Collecting garbage on stoker"
       response = @telnet.cmd("gc")
-      sleep 2
       
-      warn "Starting bbq process" if $TEST
-      response = @telnet.cmd("bbq #{state}".strip)
-      raise "Failed to start bbq process" unless response =~ /stkcmd: start/
-      sleep 2
+      until response =~ /stkcmd: start/
+        warn "Starting bbq process"
+        response = @telnet.cmd("bbq #{state}".strip)
+      end
+      # raise "Failed to start bbq process" unless response =~ /stkcmd: start/
+      sleep 5
     end
   
     def get
