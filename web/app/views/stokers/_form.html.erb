@@ -1,6 +1,16 @@
 <%= error_messages_for :stoker %>
 
 <p>
+  <b>Name</b><br />
+  <%= f.text_field :name %>
+</p>
+
+<p>
+  <b>Connection Type</b><br />
+  <%= f.select :connection_type, Stoker::CONNECTION_TYPES %>
+</p>
+
+<p>
   <b>Host</b><br />
   <%= f.text_field :host %>
 </p>
@@ -10,7 +20,28 @@
   <%= f.text_field :port %>
 </p>
 
-<p>
-  <b>Name</b><br />
-  <%= f.text_field :name %>
-</p>
+<div id="socket_options" style="<%= "display:none" unless @stoker.connection_type == "socket" %>">
+  <p>
+    <b>Output Port</b><br />
+    <%= f.text_field :output_port %>
+  </p>
+
+  <p>
+    <b>Telnet Port</b><br />
+    <%= f.text_field :telnet_port %>
+  </p>
+</div>
+
+<%= observe_field :stoker_connection_type, :on => "change", :function => "
+  if ($F('stoker_connection_type') == 'http') {
+    $('socket_options').hide();
+    $('stoker_port').value        = '80';
+    $('stoker_output_port').value = '';
+    $('stoker_telnet_port').value = '';
+  } else {
+    $('socket_options').show();
+    $('stoker_port').value        = '44444';
+    $('stoker_output_port').value = '55555';
+    $('stoker_telnet_port').value = '23';
+  }
+" %>

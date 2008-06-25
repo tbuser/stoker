@@ -1,4 +1,6 @@
 class Stoker < ActiveRecord::Base
+  CONNECTION_TYPES = ["http", "socket"]
+  
   has_many :sensors
   has_many :blowers
   has_many :events
@@ -8,7 +10,8 @@ class Stoker < ActiveRecord::Base
   validates_presence_of :host, :port, :name
   validates_uniqueness_of :name
   validates_uniqueness_of :host, :scope => :port
-
+  validates_inclusion_of :connection_type, :in => CONNECTION_TYPES
+  
   class << self; attr_accessor :skip_update end
 
   def self.no_update
@@ -18,7 +21,12 @@ class Stoker < ActiveRecord::Base
   end
   
   def net
-    @net ||= Net::Stoker.new(host, :http_port => port)
+    @net ||= Net::Stoker.new(host,
+      :connection  => self.connection_type, 
+      :port        => self.port,
+      :output_port => self.output_port, 
+      :telnet_port => self.telnet_port
+    )
   end
   
   def sync!
@@ -28,7 +36,7 @@ class Stoker < ActiveRecord::Base
       self.sensors.clear
       
       net_stoker = self.net
-      net_stoker.read_sensors
+      net_stoker.get
 
       Stoker.no_update do
         net_stoker.blowers.each do |nb|
@@ -61,6 +69,7 @@ class Stoker < ActiveRecord::Base
             Event.create!(
               :stoker => self,
               :sensor => sensor,
+              :alarm  => ns.alarm,
               :temp   => ns.temp
             )
           else

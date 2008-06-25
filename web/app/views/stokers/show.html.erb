@@ -14,10 +14,12 @@
   <%=h @stoker.status %> <%= link_to "Run", run_stoker_path(@stoker), :method => :put unless @stoker.status == "Running" %>
 </p>
 
-<p>
-  <b>Host</b>
-  <%= link_to @stoker.host_url, @stoker.host_url %>
-</p>
+<% if @stoker.connection_type == 'http' -%>
+  <p>
+    <b>Host</b>
+    <%= link_to @stoker.host_url, @stoker.host_url %>
+  </p>
+<% end -%>
 
 <div id="sensors">
   <%= render :partial => "/sensors/list", :locals => {:sensors => @stoker.sensors} %>

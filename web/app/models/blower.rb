@@ -14,7 +14,7 @@ class Blower < ActiveRecord::Base
     if !Stoker.skip_update and (self.changed & ["name", "sensor_id"]).size > 0
       spawn do
         begin
-          self.stoker.net.read_sensors
+          self.stoker.net.get
 
           params = {}
           

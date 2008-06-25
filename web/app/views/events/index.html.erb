@@ -1,16 +1,26 @@
 <h2>Listing Events</h2>
 
-<p><%= link_to '+ Add New Event', new_event_path %></p>
+<p><%= link_to image_tag("add.png") + ' Add New Event', new_event_path %></p>
 
+<table>
+  <tr>
+    <th>Time</th>
+    <th>Stoker</th>
+    <th>Sensor</th>
+    <th>Alarm</th>
+    <th>Temp</th>
+  </tr>
 <% for event in @events %>
-  <p>
-    <%= link_to format_datetime(event.created_at), event %>
-    <%= link_to event.stoker.name, event.stoker %>
-    <%= link_to event.sensor.name, event.sensor %>
-    <%=h event.temp %>F
-  </p>
+  <tr>
+    <td><%= link_to format_datetime(event.created_at), event %></td>
+    <td><%= link_to event.stoker.name, event.stoker %></td>
+    <td><%= link_to event.sensor.name, event.sensor %></td>
+    <td><%=h event.alarm %></td>
+    <td><%=h event.temp %>F</td>
+  </tr>
 <% end %>
+</table>
 
-<%= will_paginate @events %>
+<p><%= will_paginate @events %></p>
 
 

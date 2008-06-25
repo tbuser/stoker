@@ -23,7 +23,9 @@ class StokersController < ApplicationController
 
   def new
     @stoker = Stoker.new
-    @stoker.port = 80
+    
+    @stoker.connection_type = "http"
+    @stoker.port            = 80
     
     respond_to do |format|
       format.html # new.html.erb
@@ -87,6 +89,11 @@ class StokersController < ApplicationController
         flash[:warning] = e.message
         format.html { redirect_to(@stoker) }
         format.xml  { render :xml => @stoker.errors, :status => :unprocessable_entity }
+        format.js do
+          render :update do |page|
+            page << "alert('#{e.message}');"
+          end
+        end
       end
     end
   end

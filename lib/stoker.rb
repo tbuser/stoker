@@ -20,7 +20,7 @@ module Net
   
     def initialize(host = nil, options = {})
       @host       = host
-      @timeout    = options[:timeout] || 20
+      @timeout    = options[:timeout] || 30
       @connection = options[:connection].to_s.downcase || "http"
       
       raise "Unknown connection type: #{@connection}" unless ["http", "socket"].include?(@connection)
@@ -51,26 +51,25 @@ module Net
         @socket = Net::Telnet.new("Host" => @host, "Port" => @port, "Timeout" => @timeout, "Prompt" => /ok\:0/)
         @socket.cmd("op=#{@output_port}")
         
-        # sleep 5
         warn "Connecting to #{@host} on port #{@output_port}"
         @output_socket = Net::Telnet.new("Host" => @host, "Port" => @output_port, "Timeout" => @timeout)
 
-        # warn "Connecting to #{@host} on port #{@telnet_port}"
-        # @telnet = Net::Telnet.new(
-        #   "Host" => @host, 
-        #   "Port" => @telnet_port,
-        #   "Timeout" => @timeout, 
-        #   "Prompt" => /tini091cbc \/> /
-        # )
-        # 
-        # warn "Logging into telnet"
-        # # @telnet.login(@user, @pass) {|c| print c}
-        # @telnet.waitfor(/login:/)
-        # @telnet.puts @user
-        # @telnet.waitfor(/password:/)
-        # @telnet.cmd @pass
+        warn "Connecting to #{@host} on port #{@telnet_port}"
+        @telnet = Net::Telnet.new(
+          "Host" => @host, 
+          "Port" => @telnet_port,
+          "Timeout" => @timeout, 
+          "Prompt" => /tini091cbc \/> /
+        )
         
-        # restart_bbq
+        warn "Logging into telnet"
+        # @telnet.login(@user, @pass) {|c| print c}
+        @telnet.waitfor(/login:/)
+        @telnet.puts @user
+        @telnet.waitfor(/password:/)
+        @telnet.cmd @pass
+        
+        restart_bbq
       end
     end
 
