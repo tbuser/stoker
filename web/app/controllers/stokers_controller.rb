@@ -120,6 +120,32 @@ class StokersController < ApplicationController
       end
     end
   end
+
+  def test
+    respond_to do |format|
+      begin
+        child = spawn do
+          sleep 10
+        end
+        
+        status = Sys::ProcTable.ps(child.handle).empty? ? "stopped" : "running"
+        
+        format.js do
+          render :update do |page|
+            page << "alert('#{child.handle} is #{status}')"
+          end
+        end
+      rescue Exception => e
+        format.js do
+          render :update do |page|
+            page << "alert('#{e.message}')"
+          end
+        end
+      end
+    end
+  end
+
+  private
   
   def find_stoker
     @stoker = Stoker.find(params[:id])

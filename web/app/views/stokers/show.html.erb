@@ -7,6 +7,7 @@
   <%= link_to_remote "Sync", :url => sync_stoker_path(@stoker), :method => :put, :before => "$('sensors_spinner').show()", :complete => "$('sensors_spinner').hide()" %>
   <%#= link_to "Sync Plain", sync_stoker_path(@stoker), :method => :put %>
   <%= spinner("sensors_spinner") %>
+  | <%= link_to_remote "Test", :url => test_stoker_path(@stoker), :method => :put %>
 </p>
 
 <p>

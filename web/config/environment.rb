@@ -27,6 +27,7 @@ Rails::Initializer.run do |config|
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem 'mislav-will_paginate', :version => '~>2.3', :lib => 'will_paginate', :source => 'http://gems.github.com/'
   # config.gem 'sqlite3-ruby'
+  config.gem 'sys-proctabe', :version => '~>0.7.6'
   
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.

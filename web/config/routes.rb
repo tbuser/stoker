@@ -11,7 +11,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :sensors
 
-  map.resources :stokers, :member => {:sync => :put, :run => :put}
+  map.resources :stokers, :member => {:sync => :put, :run => :put, :test => :put}
 
   # The priority is based upon order of creation: first created -> highest priority.
 
