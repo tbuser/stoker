@@ -62,7 +62,7 @@ module Net
         @telnet.waitfor(/password:/)
         @telnet.cmd @pass
         
-        restart_bbq
+        # restart_bbq
 
         warn "Connecting to #{@host} on port #{@port}"
         @socket = Net::Telnet.new("Host" => @host, "Port" => @port, "Timeout" => @timeout, "Prompt" => /ok\:0/)
