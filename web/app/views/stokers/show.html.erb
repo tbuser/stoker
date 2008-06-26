@@ -7,12 +7,16 @@
   <%= link_to_remote "Sync", :url => sync_stoker_path(@stoker), :method => :put, :before => "$('sensors_spinner').show()", :complete => "$('sensors_spinner').hide()" %>
   <%#= link_to "Sync Plain", sync_stoker_path(@stoker), :method => :put %>
   <%= spinner("sensors_spinner") %>
-  | <%= link_to_remote "Test", :url => test_stoker_path(@stoker), :method => :put %>
 </p>
 
 <p>
   <b>Status</b>
-  <%=h @stoker.status %> <%= link_to "Run", run_stoker_path(@stoker), :method => :put unless @stoker.status == "Running" %>
+  <span style="<%= @stoker.status == "Recently Updated" ? "color:green" : "color:red" %>"><%= @stoker.status %></span>
+</p>
+
+<p>
+  <b>Background Process</b>
+  <%=h @process_status %> (PID: <%= @stoker.pid %>)
 </p>
 
 <% if @stoker.connection_type == 'http' -%>

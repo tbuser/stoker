@@ -4,7 +4,7 @@
 
 <% for stoker in @stokers %>
   <p>
-    <%= link_to stoker.name, stoker %> (<span style="<%= stoker.status == "Running" ? "color:green" : "color:red" %>"><%= stoker.status %></span>)
+    <%= link_to stoker.name, stoker %> (<span style="<%= stoker.status == "Recently Updated" ? "color:green" : "color:red" %>"><%= stoker.status %></span>)
   </p>
 <% end %>
 

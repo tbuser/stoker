@@ -4,7 +4,11 @@ class Stoker < ActiveRecord::Base
   has_many :sensors
   has_many :blowers
   has_many :events
-  has_many :cooks
+  has_many :cooks do
+    def active
+      find(:all, :conditions => ["start_time <= ? AND (end_time >= ? OR end_time IS NULL OR end_time = '')", Time.now, Time.now])
+    end
+  end
   has_many :adjustments, :through => :cooks
   
   validates_presence_of :host, :port, :name
@@ -83,9 +87,9 @@ class Stoker < ActiveRecord::Base
   
   def status
     if self.events.find(:first, :conditions => ["created_at >= ?", Time.now - 1.minutes])
-      "Running"
+      "Recently Updated"
     else
-      "Stopped"
+      "More than 1 minute since last update"
     end
   end
   

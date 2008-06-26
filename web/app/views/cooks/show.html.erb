@@ -11,9 +11,14 @@
 </p>
 
 <p>
-  On <%= link_to @cook.stoker.name, @cook.stoker %> <%= format_datetime(@cook.start_time) %>
+  On <%= link_to @cook.stoker.name, @cook.stoker %> started <%= format_datetime(@cook.start_time) %>
   <%= "- #{@cook.start_time.to_date == @cook.end_time.to_date ? format_time(@cook.end_time) : format_datetime(@cook.end_time)}" if @cook.end_time.to_s != "" %>
-  <%= distance_of_time_in_words(@cook.start_time, @cook.end_time || Time.now) %>
+  duration <%= distance_of_time_in_words(@cook.start_time, @cook.end_time || Time.now) %>
+</p>
+
+<p>
+  <b>Last Updated</b>
+  <%= distance_of_time_in_words_to_now(@cook.stoker.events.find(:last).created_at) %> ago
 </p>
 
 <% if @cook.running? -%>

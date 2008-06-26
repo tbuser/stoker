@@ -13,6 +13,7 @@ class StokersController < ApplicationController
 
   def show
     @recent_events = @stoker.events.find(:all, :order => "created_at DESC", :conditions => ["created_at >= ?", Time.now - 2.hours])
+    @process_status = running_pids.include?(@stoker.pid) ? "Running" : "Stopped"
     
     respond_to do |format|
       format.html
@@ -121,34 +122,9 @@ class StokersController < ApplicationController
     end
   end
 
-  def test
-    respond_to do |format|
-      begin
-        child = spawn do
-          sleep 10
-        end
-        
-        # status = Sys::ProcTable.ps(child.handle).empty? ? "stopped" : "running"
-        status = "grr"
-        
-        format.js do
-          render :update do |page|
-            page << "alert('#{child.handle} is #{status}')"
-          end
-        end
-      rescue Exception => e
-        format.js do
-          render :update do |page|
-            page << "alert('#{e.message}')"
-          end
-        end
-      end
-    end
-  end
-
   private
   
   def find_stoker
     @stoker = Stoker.find(params[:id])
-  end
+  end  
 end

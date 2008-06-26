@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080625184020) do
+ActiveRecord::Schema.define(:version => 20080626215857) do
 
   create_table "adjustments", :force => true do |t|
     t.integer  "cook_id"
@@ -97,6 +97,7 @@ ActiveRecord::Schema.define(:version => 20080625184020) do
     t.string   "connection_type"
     t.integer  "output_port"
     t.integer  "telnet_port"
+    t.integer  "pid"
   end
 
   add_index "stokers", ["name"], :name => "index_stokers_on_name"
