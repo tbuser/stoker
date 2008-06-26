@@ -96,6 +96,17 @@ module Net
           v = v.serial_number
         end
         variables[self.form_variable(k.to_s)] = v unless k.to_s == "serial_number"
+        
+        if k.to_s == "blower"
+          @stoker.sensors.each do |s|
+            if s.blower_serial_number == v
+              s.change_without_update("blower_serial_number", nil) unless s == self
+            end
+          end
+          self.change_without_update("blower_serial_number", v)
+        else
+          self.change_without_update(k, v)
+        end
       end
       @stoker.post(variables)
     end

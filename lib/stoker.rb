@@ -10,6 +10,26 @@ require "net/telnet"
 require File.join(File.dirname(__FILE__), 'sensor')
 require File.join(File.dirname(__FILE__), 'blower')
 
+class Float
+  def to_fahrenheit
+    (self * 9 / 5 + 32).round
+  end
+  
+  def to_celsius
+    (self - 32 * 5 / 9).round
+  end
+end
+
+class Integer
+  def to_fahrenheit
+    self.to_f.to_fahrenheit
+  end
+  
+  def to_celsius
+    self.to_f.to_celsius
+  end
+end
+
 module Net
   class Stoker
     attr_accessor :host, :port, :timeout, :connection, :telnet_port, :output_port, :user, :pass
@@ -47,26 +67,26 @@ module Net
       @blowers = []
       
       if @connection == "socket"
-        warn "Connecting to #{@host} on port #{@telnet_port}"
-        @telnet = Net::Telnet.new(
-          "Host" => @host, 
-          "Port" => @telnet_port,
-          "Timeout" => @timeout, 
-          "Prompt" => /tini091cbc \/> /
-        )
-        
-        warn "Logging into telnet"
-        # @telnet.login(@user, @pass) {|c| print c}
-        @telnet.waitfor(/login:/)
-        @telnet.puts @user
-        @telnet.waitfor(/password:/)
-        @telnet.cmd @pass
+        # warn "Connecting to #{@host} on port #{@telnet_port}"
+        # @telnet = Net::Telnet.new(
+        #   "Host" => @host, 
+        #   "Port" => @telnet_port,
+        #   "Timeout" => @timeout, 
+        #   "Prompt" => /tini091cbc \/> /
+        # )
+        # 
+        # warn "Logging into telnet"
+        # # @telnet.login(@user, @pass) {|c| print c}
+        # @telnet.waitfor(/login:/)
+        # @telnet.puts @user
+        # @telnet.waitfor(/password:/)
+        # @telnet.cmd @pass {|c| print c}
         
         # restart_bbq
 
         warn "Connecting to #{@host} on port #{@port}"
         @socket = Net::Telnet.new("Host" => @host, "Port" => @port, "Timeout" => @timeout, "Prompt" => /ok\:0/)
-        @socket.cmd("op=#{@output_port}")
+        @socket.cmd("op=#{@output_port}") {|c| print c}
         
         warn "Connecting to #{@host} on port #{@output_port}"
         @output_socket = Net::Telnet.new("Host" => @host, "Port" => @output_port, "Timeout" => @timeout)
@@ -77,15 +97,15 @@ module Net
     # stream the temp data to the output socket.
     def restart_bbq(state = "-t")
       warn "Killing bbq process"      
-      response = @telnet.cmd("bbq -k")
+      response = @telnet.cmd("bbq -k") {|c| print c}
       raise "Failed to kill bbq process" unless response =~ /stkcmd: stop/ or response =~ /stkcmd: not started/
       
       warn "Collecting garbage on stoker"
-      response = @telnet.cmd("gc")
+      response = @telnet.cmd("gc") {|c| print c}
       
       until response =~ /stkcmd: start/
         warn "Starting bbq process"
-        response = @telnet.cmd("bbq #{state}".strip)
+        response = @telnet.cmd("bbq #{state}".strip) {|c| print c}
       end
       # raise "Failed to start bbq process" unless response =~ /stkcmd: start/
       sleep 5
@@ -101,12 +121,12 @@ module Net
       @sensor_opts  = []
       @blower_opts  = []
 
-      response      = @socket.cmd("zx")
+      response      = @socket.cmd("zx") {|c| print c}
       sensor_ids    = response[/^SensorID:(.*)BlowerID:.*$/, 1].split(/ /) rescue []
       blower_ids    = response[/BlowerID:(.*)$/, 1].split(/ /) rescue []
 
       blower_ids.each do |i|
-        response = @socket.cmd("ge#{i}")
+        response = @socket.cmd("ge#{i}") {|c| print c}
         response =~ /^Name:(.*) Sensor:(.*)$/
         @blower_opts << {
           :serial_number  => i,
@@ -115,7 +135,7 @@ module Net
       end
       
       sensor_ids.each do |i|
-        response = @socket.cmd("ge#{i}")
+        response = @socket.cmd("ge#{i}") {|c| print c}
         response =~ /^Name:(.*) Blower:(.*) Alarm Mode:(.*) Alarm Hi:(.*) Alarm Lo:(.*) Target:(.*)$/
         blower_serial_number = $2 == "null" ? nil : @blower_opts.find{|bo| bo[:name] == $2.strip}[:serial_number]
         @sensor_opts << {
@@ -123,9 +143,9 @@ module Net
           :name                 => $1.strip,
           :blower_serial_number => blower_serial_number,
           :alarm                => $3,
-          :high                 => $4.to_i,
-          :low                  => $5.to_i,
-          :target               => $6.to_i
+          :high                 => $4.to_f.to_fahrenheit,
+          :low                  => $5.to_f.to_fahrenheit,
+          :target               => $6.to_f.to_fahrenheit
         }
       end
 
@@ -134,7 +154,7 @@ module Net
         # puts line
         parts = line.split(" ", 11)
         parts[0] = parts[0].chop
-        @sensor_opts.find{|so| so[:serial_number] == parts[0]}[:temp] = parts[9]
+        @sensor_opts.find{|so| so[:serial_number] == parts[0]}[:temp] = parts[8].to_f.to_fahrenheit
       end
 
       @sensor_opts.each do |s|
@@ -242,7 +262,7 @@ module Net
 
       warn "Posting #{q}"
 
-      @socket.cmd(q)
+      @socket.cmd(q) {|c| print c}
     end
   
     def post_http(params = {})
