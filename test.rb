@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 # TODO: make this into a proper testing framework  :)
 
-$TEST = true
+$TEST = false
 $TEST_HTML = File.open("tests/test1.html")
 
 require "lib/stoker"
 
-stoker = Net::Stoker.new("10.1.1.8", :connection => "socket")
+stoker = Net::Stoker.new("10.1.1.8", :connection => "http")
 
 puts "Getting data..."
 stoker.get
@@ -21,29 +21,29 @@ stoker.sensors.each do |sensor|
   puts "#{sensor.serial_number}, #{sensor.name}, #{sensor.temp}, #{sensor.target}, #{sensor.alarm}, #{sensor.low}, #{sensor.high}, #{sensor.blower.name rescue ''}"
 end
 
-sensor = stoker.sensors[0]
-name = sensor.name
-serial_number = sensor.serial_number
-
-puts "#{serial_number} was #{name} changing to Test"
-sensor.name = "Test"
-
-puts "name is now #{sensor.name}"
-
-puts "Getting data..."
-stoker.get
-
-sensor = stoker.sensor(serial_number)
-puts "#{sensor.serial_number} is now #{sensor.name} changing back to #{name}"
-sensor.update_attributes :name => name
-
-puts "name is now #{sensor.name}"
-
-puts "Getting data..."
-stoker.get
-
-sensor = stoker.sensor(serial_number)
-puts "#{sensor.serial_number} is now back to #{sensor.name}"
+# sensor = stoker.sensors[0]
+# name = sensor.name
+# serial_number = sensor.serial_number
+# 
+# puts "#{serial_number} was #{name} changing to Test"
+# sensor.name = "Test"
+# 
+# puts "name is now #{sensor.name}"
+# 
+# puts "Getting data..."
+# stoker.get
+# 
+# sensor = stoker.sensor(serial_number)
+# puts "#{sensor.serial_number} is now #{sensor.name} changing back to #{name}"
+# sensor.update_attributes :name => name
+# 
+# puts "name is now #{sensor.name}"
+# 
+# puts "Getting data..."
+# stoker.get
+# 
+# sensor = stoker.sensor(serial_number)
+# puts "#{sensor.serial_number} is now back to #{sensor.name}"
 
 # 
 # puts "Red: #{stoker.sensor("Red").temp}"

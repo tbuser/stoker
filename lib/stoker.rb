@@ -167,12 +167,12 @@ module Net
     end
   
     def get_http(attempt = 1)
-      warn "Requesting http://#{@host}:#{@http_port}"
+      warn "Requesting http://#{@host}:#{@port}"
 
       @sensors    = []
       @blowers    = []
       html        = $TEST_HTML if $TEST
-      html      ||= open("http://#{@host}:#{@http_port}")
+      html      ||= open("http://#{@host}:#{@port}")
       contents    = html.read
       @sensor_opts = []
       @blower_opts = []
