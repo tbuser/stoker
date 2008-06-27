@@ -3,6 +3,7 @@
 require "rubygems"
 require "hpricot"
 require "net/http"
+require "mechanize"
 require "cgi"
 require "open-uri"
 require "net/telnet"
@@ -278,15 +279,21 @@ module Net
 
       warn "Posting #{post_url}?#{q}"
 
+      # agent = WWW::Mechanize.new
+      # agent.read_timeout = 120
+      # page = agent.post(post_url, params)
+      # puts page.body
+
       # res = HTTP.post_form(URI.parse(post_url), params)
       url = URI.parse(post_url)
       req = Net::HTTP::Post.new(url.path)
-      req["Keep-Alive"] = 300
-      req["Connection"] = "keep-alive"
-      req["Referer"] = "http://#{@host}:#{@http_port}/index.html"
+      # req["Keep-Alive"] = false
+      # req["Keep-Alive"] = 300
+      # req["Connection"] = "keep-alive"
+      # req["Referer"] = "http://#{@host}:#{@port}/index.html"
       req.set_form_data(params)
       http = Net::HTTP.new(url.host, url.port)
-      http.read_timeout = 600
+      # http.read_timeout = 0
       res = http.start {|http| http.request(req)}
       case res
       when Net::HTTPSuccess, Net::HTTPRedirection
@@ -309,5 +316,8 @@ module Net
       @blowers.find{|b| b.name.downcase == str or b.serial_number.downcase == str}
     end
       
+    def to_s
+      @name || @host
+    end    
   end
 end

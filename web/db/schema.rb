@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080626215857) do
+ActiveRecord::Schema.define(:version => 20080627181229) do
 
   create_table "adjustments", :force => true do |t|
     t.integer  "cook_id"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(:version => 20080626215857) do
     t.integer  "stoker_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "sensor_id"
   end
 
   add_index "blowers", ["stoker_id"], :name => "index_blowers_on_stoker_id"
@@ -76,14 +77,12 @@ ActiveRecord::Schema.define(:version => 20080626215857) do
     t.string   "alarm",         :default => "None"
     t.integer  "low"
     t.integer  "high"
-    t.integer  "blower_id"
     t.integer  "stoker_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "sensors", ["alarm"], :name => "index_sensors_on_alarm"
-  add_index "sensors", ["blower_id"], :name => "index_sensors_on_blower_id"
   add_index "sensors", ["stoker_id"], :name => "index_sensors_on_stoker_id"
   add_index "sensors", ["name"], :name => "index_sensors_on_name"
   add_index "sensors", ["serial_number"], :name => "index_sensors_on_serial_number"

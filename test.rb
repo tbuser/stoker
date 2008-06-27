@@ -11,6 +11,13 @@ stoker = Net::Stoker.new("10.1.1.8", :connection => "http")
 puts "Getting data..."
 stoker.get
 
+# 530000112A584E30: Yellow
+# 440000112A621E30: Pit Temp
+# 0E0000112A5D1630: Blue
+# 9C00001195DEE430: Red
+
+# 140000002AA65105: Fan
+
 puts "Listing blowers:"
 stoker.blowers.each do |blower|
   puts "#{blower.serial_number}, #{blower.name}, #{blower.sensor.name rescue ''}"
@@ -21,7 +28,10 @@ stoker.sensors.each do |sensor|
   puts "#{sensor.serial_number}, #{sensor.name}, #{sensor.temp}, #{sensor.target}, #{sensor.alarm}, #{sensor.low}, #{sensor.high}, #{sensor.blower.name rescue ''}"
 end
 
-# sensor = stoker.sensors[0]
+sensor = stoker.sensor("530000112A584E30")
+res = sensor.update_attributes(:name => "Yellow Foo", :blower_serial_number => stoker.blower("140000002AA65105").serial_number)
+puts res.to_s
+
 # name = sensor.name
 # serial_number = sensor.serial_number
 # 

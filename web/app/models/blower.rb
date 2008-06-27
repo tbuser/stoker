@@ -1,7 +1,6 @@
 class Blower < ActiveRecord::Base
   belongs_to :stoker
-  
-  has_one :sensor
+  belongs_to :sensor
   
   has_many :adjustments
   
@@ -12,19 +11,17 @@ class Blower < ActiveRecord::Base
 
   def update_net_stoker
     if !Stoker.skip_update and (self.changed & ["name", "sensor_id"]).size > 0
-      spawn do
+      # spawn do
         begin
-          self.stoker.net.get
-
           params = {}
           
           ["name", "sensor_id"].each do |field|
             if self.changed.include?(field)
               if field == "sensor_id"
                 if self.sensor_id.to_s == ""
-                  params[:sensor] = nil
+                  params[:sensor_serial_number] = nil
                 else
-                  params[:sensor] = self.stoker.net.sensor(self.sensor.serial_number)
+                  params[:sensor_serial_number] = self.sensor.serial_number
                 end
               else
                 params[field] = self.send(field)
@@ -36,7 +33,7 @@ class Blower < ActiveRecord::Base
         rescue Exception => e
           raise "#{e.message}\n#{e.backtrace.to_yaml}"
         end
-      end
+      # end
     end
   end
 

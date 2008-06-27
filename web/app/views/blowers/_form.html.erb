@@ -11,6 +11,11 @@
 </p>
 
 <p>
+  <b>Sensor</b><br />
+  <%= f.collection_select :sensor_id, Sensor.find(:all), :id, :name, {:include_blank => true} %>
+</p>
+
+<p>
   <b>Stoker</b><br />
   <%= f.collection_select :stoker_id, Stoker.find(:all), :id, :name %>
 </p>

@@ -10,7 +10,8 @@ module Net
       "target"  => "ta",
       "high"    => "th",
       "low"     => "tl",
-      "blower"  => "sw"
+      "blower"  => "sw",
+      "blower_serial_number" => "sw"
     }
 
     def initialize(stoker, options = {})
@@ -62,14 +63,17 @@ module Net
     end
 
     def blower_serial_number=(str)
-      if @blower_serial_number = @stoker.blower(str).serial_number
+      if str.to_s == "" or str == "None"
+        @blower_serial_number = nil
+        @stoker.post(self.form_variable("blower") => "None")
+      elsif @blower_serial_number = @stoker.blower(str).serial_number
         self.blower.change_without_update("sensor_serial_number", @serial_number)
         @stoker.sensors.each do |s|
           if s.blower_serial_number == @blower_serial_number
             s.change_without_update("blower_serial_number", nil) unless s == self
           end
         end
-        @stoker.post(self.form_variable("blower") => @blower_serial_number)
+        @stoker.post(self.form_variable("blower_serial_number") => @blower_serial_number)
       else
         raise "Blower not found"
       end
@@ -91,24 +95,65 @@ module Net
     
     def update_attributes(params)
       variables = {}
-      params.each do |k,v|
-        if k.to_s == "blower"
-          v = v.serial_number
-        end
-        variables[self.form_variable(k.to_s)] = v unless k.to_s == "serial_number"
-        
-        if k.to_s == "blower"
-          @stoker.sensors.each do |s|
-            if s.blower_serial_number == v
-              s.change_without_update("blower_serial_number", nil) unless s == self
+
+      tp = params
+      params = {}
+      tp.each{|name,value| params[name.to_s] = value}
+
+      params.each do |name, value|
+        case name
+        when "blower"
+          name = "blower_serial_number"
+          if value.to_s == ""
+            value = "None"
+          else
+            value = value.serial_number
+          end
+        when "blower_serial_number"
+          if value.to_s == ""
+            value = "None"
+          end
+        when "alarm"
+          value = Net::Stoker::ALARMS.index(value.capitalize)
+        end        
+
+        if name == "blower_serial_number"          
+          if value != "None"
+            # update internal state of any other sensors that have this blower
+            @stoker.sensors.each do |s|
+              s.change_without_update("blower_serial_number", nil) if s.blower_serial_number == value
+            end
+            
+            # update the blower's internal state to this sensor
+            @stoker.blower(value).change_without_update("sensor_serial_number", self.serial_number)
+          end
+          
+          # update internal state of any blowers pointing to this sensor if we're setting to None
+          if value == "None"
+            @stoker.blowers.each do |b|
+              b.change_without_update("sensor_serial_number", nil) if b.sensor_serial_number == self.serial_number
             end
           end
-          self.change_without_update("blower_serial_number", v)
-        else
-          self.change_without_update(k, v)
         end
+        
+        variables[name] = value unless name == "serial_number"
       end
-      @stoker.post(variables)
+
+      # update internal state
+      variables.each do |name, value|
+        self.change_without_update(name, value)
+      end
+      
+      params = {}
+      variables.each do |name, value|
+        params[self.form_variable(name)] = value
+      end
+      
+      @stoker.post(params)
     end
+    
+    def to_s
+      @name || @serial_number
+    end    
   end
 end
