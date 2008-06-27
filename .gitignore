@@ -4,3 +4,4 @@ web/db/*.sqlite3
 tmp/**/*
 web/doc/api
 web/doc/app
+*.DS_Store

@@ -5,7 +5,7 @@
   </td>
   <td class="number"><%= sensor.temp %>F</td>
   <td class="number">
-    <% if sensor.target > 0 -%>
+    <% if sensor.target.to_f > 0 -%>
       <%= image_tag("tick.png") if sensor.temp >= sensor.target %>
       <%= "#{sensor.target}F" %>
     <% end %>
