@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :authenticate, :except => [ :index, :show, :about ]
   before_filter :adjust_format_for_iphone
-  # before_filter :check_background_processes
+  before_filter :check_background_processes
   
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
