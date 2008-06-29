@@ -22,19 +22,17 @@ module Net
     end
 
     def sensor_serial_number=(str)
-      if str.to_s == "" or str == "None"
-        @stoker.post(@stoker.sensor(self.sensor.serial_number).form_variable("blower") => "None") rescue nil
-        @sensor_serial_number = nil
-      elsif @sensor_serial_number = @stoker.sensor(str).serial_number
-        @stoker.blowers.each do |b|
-          if b.sensor_serial_number == @sensor_serial_number
-            s.change_without_update("blower_serial_number", nil) unless b == self
-          end
+      if str.to_s == ""
+        @stoker.sensors.each do |s|
+          s.change_without_update("blower_serial_number", nil) if s.blower_serial_number == self.serial_number
         end
-        self.sensor.blower = self
-        # setting sensor blower will cause an update of stoker
       else
-        raise "Sensor not found"
+        sensor = @stoker.sensor(str)
+        if sensor
+          sensor.blower_serial_number = self.serial_number
+        else
+          raise "Sensor not found"
+        end
       end
     end
 
@@ -42,9 +40,12 @@ module Net
       self.sensor_serial_number = s.serial_number rescue nil
     end
 
+    def sensor_serial_number
+      @stoker.sensors.find{|s| s.blower_serial_number == self.serial_number}.serial_number rescue nil
+    end
+
     def sensor
-      raise "Blower not associated with a sensor" if self.sensor_serial_number.nil?
-      @stoker.sensor(self.sensor_serial_number)
+      @stoker.sensors.find{|s| s.blower_serial_number == self.serial_number} rescue nil
     end
 
     def form_variable(type)
@@ -95,7 +96,7 @@ module Net
 
       # update internal state
       variables.each do |name, value|
-        self.change_without_update(name, value)
+        self.change_without_update(name, value) unless name == "sensor_serial_number"
       end
       
       params = {}

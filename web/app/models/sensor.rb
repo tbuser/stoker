@@ -75,8 +75,6 @@ class Sensor < ActiveRecord::Base
   
   def set_blower
     Stoker.no_update do
-    
-      puts "Updating blower assignment in sensor model"
       if b = self.blower
         if @blower_id.to_s == ""
           b.sensor_id = nil
@@ -85,7 +83,6 @@ class Sensor < ActiveRecord::Base
         end
         b.save!
       end
-      
     end
     true
   end

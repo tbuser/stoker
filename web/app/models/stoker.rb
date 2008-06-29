@@ -19,9 +19,10 @@ class Stoker < ActiveRecord::Base
   class << self; attr_accessor :skip_update end
 
   def self.no_update
+    old_skip_update = Stoker.skip_update
     Stoker.skip_update = true
     yield
-    Stoker.skip_update = false
+    Stoker.skip_update = old_skip_update
   end
   
   def net
@@ -71,7 +72,6 @@ class Stoker < ActiveRecord::Base
       net_stoker.get
 
       Stoker.no_update do
-        puts "Updating blowers"
         net_stoker.blowers.each do |nb|
           if blower = Blower.find_or_create_by_serial_number(nb.serial_number)
             blower.update_attributes!(
@@ -83,7 +83,6 @@ class Stoker < ActiveRecord::Base
           end
         end
 
-        puts "Updating sensors"
         net_stoker.sensors.each do |ns|
           if sensor = Sensor.find_or_create_by_serial_number(ns.serial_number)
             sensor.update_attributes!(
@@ -97,12 +96,10 @@ class Stoker < ActiveRecord::Base
 
             if ns.blower_serial_number.to_s != ""
               b = Blower.find_by_serial_number(ns.blower_serial_number)
-              puts "Sensor #{sensor.name} assigning to blower #{b.name}"
               b.sensor_id = sensor.id
               b.save!
             end
         
-            puts "Creating events"
             Event.create!(
               :stoker => self,
               :sensor => sensor,

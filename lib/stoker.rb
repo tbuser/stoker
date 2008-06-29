@@ -3,7 +3,7 @@
 require "rubygems"
 require "hpricot"
 require "net/http"
-require "mechanize"
+# require "mechanize"
 require "cgi"
 require "open-uri"
 require "net/telnet"

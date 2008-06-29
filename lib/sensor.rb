@@ -66,21 +66,24 @@ module Net
       if str.to_s == "" or str == "None"
         @blower_serial_number = nil
         @stoker.post(self.form_variable("blower") => "None")
-      elsif @blower_serial_number = @stoker.blower(str).serial_number
-        self.blower.change_without_update("sensor_serial_number", @serial_number)
-        @stoker.sensors.each do |s|
-          if s.blower_serial_number == @blower_serial_number
-            s.change_without_update("blower_serial_number", nil) unless s == self
-          end
-        end
-        @stoker.post(self.form_variable("blower_serial_number") => @blower_serial_number)
       else
-        raise "Blower not found"
+        blower = @stoker.blower(str)
+        if blower
+          @blower_serial_number = blower.serial_number
+          @stoker.sensors.each do |s|
+            if s.blower_serial_number == @blower_serial_number
+              s.change_without_update("blower_serial_number", nil) unless s == self
+            end
+          end
+          @stoker.post(self.form_variable("blower_serial_number") => @blower_serial_number)
+        else
+          raise "Blower not found"
+        end
       end
     end
 
     def blower=(b)
-      self.blower_serial_number = b.serial_number
+      self.blower_serial_number = b.serial_number rescue nil
     end
 
     def blower
@@ -123,23 +126,13 @@ module Net
             @stoker.sensors.each do |s|
               s.change_without_update("blower_serial_number", nil) if s.blower_serial_number == value
             end
-            
-            # update the blower's internal state to this sensor
-            @stoker.blower(value).change_without_update("sensor_serial_number", self.serial_number)
-          end
-          
-          # update internal state of any blowers pointing to this sensor if we're setting to None
-          if value == "None"
-            @stoker.blowers.each do |b|
-              b.change_without_update("sensor_serial_number", nil) if b.sensor_serial_number == self.serial_number
-            end
           end
         end
         
         variables[name] = value unless name == "serial_number"
       end
 
-      # update internal state
+      # update this sensor's internal state
       variables.each do |name, value|
         self.change_without_update(name, value)
       end
