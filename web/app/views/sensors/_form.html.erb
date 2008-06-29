@@ -31,10 +31,18 @@
   <%= f.text_field :high %>
 </p>
 
-<p>
-  <b>Blower</b><br />
-  <%= f.collection_select :blower_id, Blower.find(:all), :id, :name, {:include_blank => true} %>
-</p>
+<% if @sensor.stoker -%>
+  <% if @sensor.stoker.blowers.size > 0 -%>
+    <p>
+      <b>Blower</b><br />
+      <%= f.collection_select :blower_id, @sensor.stoker.blowers.find(:all), :id, :name, {:include_blank => true} %>
+    </p>
+  <% else -%>
+    <p class="warning">There are no blowers connected to this stoker.</p>
+  <% end -%>
+<% else -%>
+  <p class="warning">Cannot set blower, this sensor is not connected to a stoker.</p>
+<% end -%>
 
 <p>
   <b>Stoker</b><br />

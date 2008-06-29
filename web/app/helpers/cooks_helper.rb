@@ -2,13 +2,13 @@ module CooksHelper
   def cook_status(cook)
     case cook.status
     when "Not Started"
-      '<span style="color:yellow">Not Started</span>'
+      '<span class="message">Not Started</span>'
     when "Running"
-      '<span style="color:green">Running</span>'
+      '<span class="notice">Running</span>'
     when "Finished"
       '<strong><em>Finished</em></strong>'
     else
-      '<span style="color:red">Unknown</span>'
+      '<span class="warning">Unknown</span>'
     end
   end
 end

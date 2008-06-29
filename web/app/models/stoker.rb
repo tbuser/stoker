@@ -65,6 +65,8 @@ class Stoker < ActiveRecord::Base
   def sync!
     Stoker.transaction do
 
+      Blower.update_all("sensor_id = null", "sensor_id IN (#{self.sensors.collect{|s| s.id}.join(",")}) OR stoker_id = #{self.id}")
+
       self.blowers.clear
       self.sensors.clear
       
@@ -75,8 +77,8 @@ class Stoker < ActiveRecord::Base
         net_stoker.blowers.each do |nb|
           if blower = Blower.find_or_create_by_serial_number(nb.serial_number)
             blower.update_attributes!(
-              :name   => nb.name,
-              :stoker => self
+              :name       => nb.name,
+              :stoker     => self
             )
           else
             raise "Failed to find or create blower #{nb.serial_number}"
@@ -86,12 +88,12 @@ class Stoker < ActiveRecord::Base
         net_stoker.sensors.each do |ns|
           if sensor = Sensor.find_or_create_by_serial_number(ns.serial_number)
             sensor.update_attributes!(
-              :name   => ns.name,
-              :target => ns.target,
-              :alarm  => ns.alarm,
-              :low    => ns.low,
-              :high   => ns.high,
-              :stoker => self
+              :name       => ns.name,
+              :target     => ns.target,
+              :alarm      => ns.alarm,
+              :low        => ns.low,
+              :high       => ns.high,
+              :stoker     => self
             )
 
             if ns.blower_serial_number.to_s != ""

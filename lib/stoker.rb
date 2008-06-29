@@ -302,6 +302,8 @@ module Net
       else
         res.error!
       end
+    rescue Exception => e
+      warn e.message
     end
 
     def sensor(str)

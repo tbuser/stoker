@@ -15,6 +15,18 @@ body {
 	*/
 }
 
+.warning {
+  color: red;
+}
+
+.notice {
+  color: green;
+}
+
+.message {
+  color: darkgoldenrod;
+}
+
 #notice {
   border-top: 1px solid green;
   border-bottom: 1px solid green;
