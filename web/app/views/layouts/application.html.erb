@@ -3,7 +3,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <!-- <meta http-equiv="refresh" content="300"> -->
+  <% if @refresh -%>
+    <meta http-equiv="refresh" content="60">
+  <% end -%>
   <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
   <title>Stoker Web</title>
   <%= stylesheet_link_tag 'scaffold' %>

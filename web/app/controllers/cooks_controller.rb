@@ -12,6 +12,8 @@ class CooksController < ApplicationController
   end
 
   def show
+    @refresh = true
+    
     params[:range] ||= @cook.running? ? "last" : "all"
     params[:hours] ||= "6"
     
