@@ -20,8 +20,8 @@ class ApplicationController < ActionController::Base
   private
 
   def authenticate
-    authenticate_or_request_with_http_basic do |user_name, password|
-      user_name == "root" && password == "tini"
+    authenticate_or_request_with_http_basic do |username, password|
+      username == STOKER_CONFIG[:username] && password == STOKER_CONFIG[:password]
     end
   end  
   
