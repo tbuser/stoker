@@ -5,6 +5,10 @@ class Cook < ActiveRecord::Base
 
   validates_presence_of :stoker_id, :name, :start_time
   
+  def self.active
+    find(:all, :conditions => ["start_time <= ? AND (end_time >= ? OR end_time IS NULL)", Time.now, Time.now])
+  end
+  
   def running?
     (self.start_time <= Time.now) && ((self.end_time.to_s == "") || (self.end_time > Time.now))
   end

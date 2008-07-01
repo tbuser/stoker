@@ -45,6 +45,13 @@
       <% end -%>
     <% end -%>
 
+    <% if Cook.active.size > 0 -%>
+      <div id="message" class="alert">
+        Active Cooks:
+        <%= Cook.active.collect{|cook| link_to cook.name, cook }.join(", ") %>
+      </div>
+    <% end -%>
+    
     <div id="content">
       <%= yield  %>
     </div>
