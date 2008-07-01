@@ -2,6 +2,7 @@ class Sensor < ActiveRecord::Base
   ALARMS = ["None", "Food", "Fire"]
   
   attr_accessor :blower_id
+  attr_reader :update_blower
   
   belongs_to :stoker
 
@@ -27,18 +28,18 @@ class Sensor < ActiveRecord::Base
   end
 
   def update_net_stoker
-    if !Stoker.skip_update and (self.changed & ["name", "target", "alarm", "high", "low", "blower_id"]).size > 0
+    if !Stoker.skip_update and ((self.changed & ["name", "target", "alarm", "high", "low", "blower_id"]).size > 0 or @update_blower)
       # spawn do
         begin      
           params = {}
-          
+
           ["name", "target", "alarm", "high", "low", "blower_id"].each do |field|
-            if self.changed.include?(field)
+            if self.changed.include?(field) or (field == "blower_id" and @update_blower)
               if field == "blower_id"
-                if self.blower_id.to_s == ""
+                if @blower_id.to_s == ""
                   params[:blower_serial_number] = nil
                 else
-                  params[:blower_serial_number] = self.blower.serial_number
+                  params[:blower_serial_number] = Blower.find(@blower_id).serial_number
                 end
               else
                 params[field] = self.send(field)
@@ -75,13 +76,17 @@ class Sensor < ActiveRecord::Base
   
   def set_blower
     Stoker.no_update do
-      if b = self.blower
-        if @blower_id.to_s == ""
-          b.sensor_id = nil
-        else
-          b.sensor_id = self.id
-        end
+      if @blower_id.to_s != ""
+        b = Blower.find(@blower_id)
+        b.sensor_id = self.id
         b.save!
+        @update_blower = true
+      else
+        if b = Blower.find_by_sensor_id(self.id)
+          b.sensor_id = nil
+          b.save!
+          @update_blower = true
+        end
       end
     end
     true
