@@ -11,7 +11,7 @@
     <% end %>
   </td>
   <td><%= sensor.alarm unless sensor.alarm == "None" %></td>
-  <td class="number"><%= "#{sensor.low}F" if sensor.low > 32 %></td>
-  <td class="number"><%= "#{sensor.high}F" if sensor.high > 32 %></td>
+  <td class="number"><%= "#{sensor.low}F" if sensor.low.to_i > 32 %></td>
+  <td class="number"><%= "#{sensor.high}F" if sensor.high.to_i > 32 %></td>
   <td><%= link_to sensor.blower.name, sensor.blower if sensor.blower %></td>
 </div>
