@@ -22,9 +22,22 @@
 </p>
 
 <% if @cook.running? -%>
-  <%= render :partial => "/sensors/list", :locals => {:sensors => @cook.sensors, :cook => @cook} %>
-  <br/>
+  <p><%= render :partial => "/sensors/list", :locals => {:sensors => @cook.sensors, :cook => @cook} %></p>
 <% end -%>
+
+<p id="show_adjustments">
+  <%= link_to_function "Show Adjustments", "$('adjustments').show();$('show_adjustments').hide();" %>
+</p>
+
+<div id="adjustments" style="display:none">
+  <p id="hide_adjustments">
+    <%= link_to_function "Hide Adjustments", "$('adjustments').hide();$('show_adjustments').show();" %>
+  </p>
+
+  <hr/>
+
+  <%= render :partial => "adjustment", :collection => @adjustments %>
+</div>
 
 <% form_tag cook_path(@cook), :method => :get do %>
   <%= radio_button_tag :range, "last", params[:range] == "last", :onclick => "$('range_select').hide();" %> Last <%= text_field_tag :hours, params[:hours], :size => "2", :maxlength => "2" %> Hours

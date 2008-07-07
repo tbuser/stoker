@@ -1,6 +1,7 @@
 web/log/*.log
 web/db/*.db
 web/db/*.sqlite3
+web/db/*.sqlite3-journal
 tmp/**/*
 web/doc/api
 web/doc/app

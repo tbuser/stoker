@@ -12,6 +12,7 @@ class CooksController < ApplicationController
   end
 
   def show
+    @adjustments = @cook.adjustments.find(:all, :order => "created_at DESC")
     @refresh = true
     
     params[:range] ||= @cook.running? ? "last" : "all"

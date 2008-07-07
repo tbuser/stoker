@@ -1,0 +1,12 @@
+<p>
+  <%= format_datetime(adjustment.created_at) %>: 
+  <%= link_to(adjustment.sensor.name, adjustment.sensor) %> changed 
+  <% if adjustment.differences.size == 0 -%>
+    nothing
+  <% else -%>
+    <%= adjustment.differences.collect{|setting,values| "#{setting} #{values[:new].to_s}"}.join(", ") %>
+  <% end -%>
+  <br/>
+  <%= simple_format(adjustment.note) %>
+  <hr/>
+</p>

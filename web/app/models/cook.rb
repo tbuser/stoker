@@ -46,6 +46,7 @@ class Cook < ActiveRecord::Base
     Stoker.no_update do
       Cook.transaction do
         begin
+          puts "--------------> #{self.sensors.size}"
           self.sensors.each do |sensor|
             adjustment = self.adjustments.build(
               :sensor_id  => sensor.id,
