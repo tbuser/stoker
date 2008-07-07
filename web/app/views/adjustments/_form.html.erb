@@ -1,0 +1,28 @@
+<%= f.error_messages %>
+
+<%= f.hidden_field :sensor_id %>
+
+<p>
+  <%= f.label :target %><br />
+  <%= f.text_field :target %>
+</p>
+<p>
+  <%= f.label :alarm %><br />
+  <%= f.select :alarm, Sensor::ALARMS %>
+</p>
+<p>
+  <%= f.label :low %><br />
+  <%= f.text_field :low %>
+</p>
+<p>
+  <%= f.label :high %><br />
+  <%= f.text_field :high %>
+</p>
+<p>
+  <%= f.label :blower_id %><br />
+  <%= f.select :blower_id, @cook.stoker.blowers.collect{|s| [s.name, s.id]}, :include_blank => true %>
+</p>
+<p>
+  <%= f.label :note %><br />
+  <%= f.text_area :note, :style => "width:100%;height:100px" %>
+</p>

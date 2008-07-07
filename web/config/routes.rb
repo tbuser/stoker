@@ -1,9 +1,9 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :adjustments
-
   map.resource :page, :member => {:about => :get}
 
-  map.resources :cooks, :member => {:stop => :put}
+  map.resources :cooks, :member => {:stop => :put} do |cooks|
+    cooks.resources :adjustments
+  end
 
   map.resources :events
 

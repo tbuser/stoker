@@ -1,6 +1,6 @@
 <tr class="<%= sensor.alarm_status %>_alarm">
   <td>
-    <%= link_to image_tag("pencil.png"), new_adjustment_path(:sensor_id => sensor.id, :cook_id => cook.id) if cook %>
+    <%= link_to image_tag("pencil.png"), new_cook_adjustment_path(:sensor_id => sensor.id, :cook_id => cook.id) if cook %>
     <%= link_to sensor.name, sensor %>
   </td>
   <td class="number"><%= sensor.temp %>F</td>
