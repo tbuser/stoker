@@ -1,2 +1,2 @@
-require 'CSV'
+require 'csv'
 require 'to_csv'
