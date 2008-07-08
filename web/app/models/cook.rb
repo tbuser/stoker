@@ -5,7 +5,7 @@ class Cook < ActiveRecord::Base
   has_many :adjustments
 
   validates_presence_of :stoker_id, :name, :start_time
-  before_create :add_initial_adjustments
+  after_create :add_initial_adjustments
   
   def self.active
     find(:all, :conditions => ["start_time <= ? AND (end_time >= ? OR end_time IS NULL)", Time.now, Time.now])
@@ -39,6 +39,20 @@ class Cook < ActiveRecord::Base
       []
     end
   end
+
+  def events
+    # FIXME: need a better way to associate specific sensors to a cook...
+    # Event.find(:all,
+    #   :conditions => ["stoker_id = ? AND sensor_id IN (?) AND (created_at >= ? AND created_at <= ?)", 
+    #     self.stoker_id, self.sensors.collect{|s| s.id}, self.start_time, (self.end_time || Time.now)], 
+    #   :order => "created_at"
+    # )
+    Event.find(:all,
+      :conditions => ["created_at >= ? AND created_at <= ?", 
+        self.start_time, (self.end_time || Time.now)], 
+      :order => "created_at"
+    )
+  end
   
   private
   
@@ -46,7 +60,6 @@ class Cook < ActiveRecord::Base
     Stoker.no_update do
       Cook.transaction do
         begin
-          puts "--------------> #{self.sensors.size}"
           self.sensors.each do |sensor|
             adjustment = self.adjustments.build(
               :sensor_id  => sensor.id,

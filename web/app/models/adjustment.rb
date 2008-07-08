@@ -11,7 +11,7 @@ class Adjustment < ActiveRecord::Base
   def differences
     differences = {}
 
-    last_adjustment = self.sensor.adjustments.find(:first, :conditions => ["created_at < ?", self.created_at], :order => "created_at DESC")
+    last_adjustment = self.sensor.adjustments.find(:first, :conditions => ["cook_id = ? AND created_at < ?", self.cook_id, self.created_at], :order => "created_at DESC")
     
     [:target, :alarm, :low, :high, :blower].each do |setting|
       if last_adjustment

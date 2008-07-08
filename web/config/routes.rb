@@ -1,7 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
   map.resource :page, :member => {:about => :get}
 
-  map.resources :cooks, :member => {:stop => :put} do |cooks|
+  map.resources :cooks, :member => {:stop => :put, :events => :get} do |cooks|
     cooks.resources :adjustments
   end
 

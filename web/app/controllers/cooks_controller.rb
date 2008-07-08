@@ -109,6 +109,14 @@ class CooksController < ApplicationController
     end
   end
 
+  def events
+    @events = @cook.events
+    
+    respond_to do |format|
+      format.csv { send_data @events.to_csv(:timestamps => true, :only => [:created_at, :name, :alarm, :temp], :methods => [:name]) }
+    end
+  end
+
   private
   
   def find_cook

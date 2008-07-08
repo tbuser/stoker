@@ -57,3 +57,7 @@
 <p>
   <%= simple_format(@cook.description) %>
 </p>
+
+<p>
+  <%= link_to "Export to CSV", formatted_events_cook_url(@cook, :csv) %>
+</p>
