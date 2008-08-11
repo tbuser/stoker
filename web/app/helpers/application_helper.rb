@@ -120,4 +120,23 @@ module ApplicationHelper
     render :partial => "/shared/graphs", :locals => {:options => options}
   end
 
+  def alarm_sound
+    alarm = ""
+
+    cooks = Cook.active
+
+    cooks.each do |c|
+      c.sensors.each do |s|
+        if s.alarm.downcase == "fire" and s.alarm_status == "red"
+          alarm = "fire"
+          break
+        elsif s.alarm.downcase == "food" and s.alarm_status == "red"
+          alarm = "food"
+          break
+        end
+      end
+    end
+
+    render :partial => "/shared/alarm_sound", :locals => {:alarm => alarm}
+  end
 end

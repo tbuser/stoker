@@ -71,6 +71,10 @@ body {
   color: #fff;
 }
 
+#header a {
+  color: #fff;
+}
+
 #menu {
   margin: 0px;
   padding: 10px;

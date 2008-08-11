@@ -64,6 +64,13 @@ class Cook < ActiveRecord::Base
       self.save!
     end
   end
+
+  def alarm?
+    self.sensors.each do |s|
+      return true if s.alarm_status == "red"
+    end
+    return false
+  end
   
   private
   

@@ -1,5 +1,5 @@
 class StokersController < ApplicationController
-  before_filter :find_stoker, :except => [:index, :new, :create]
+  before_filter :find_stoker, :except => [:index, :new, :create, :toggle_alarm]
   
   def index
     @stokers = Stoker.find(:all)
@@ -119,6 +119,17 @@ class StokersController < ApplicationController
         format.html { redirect_to(@stoker) }
         format.xml  { render :xml => @stoker.errors, :status => :unprocessable_entity }
       end
+    end
+  end
+
+  def toggle_alarm
+    if session[:mute_alarm]
+      session[:mute_alarm] = false
+    else
+      session[:mute_alarm] = true
+    end
+    render :update do |page|
+      page.replace_html :alarm_sound, :partial => "/shared/alarm_sound", :locals => {:alarm => ""}
     end
   end
 

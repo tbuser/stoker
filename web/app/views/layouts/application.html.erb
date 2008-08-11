@@ -27,6 +27,7 @@
 
   <div id="wrapper">
     <div id="header">
+      <span id="alarm_sound"><%= alarm_sound %></span>
       <h1>Stoker Web</h1>
     </div>
 
@@ -48,7 +49,7 @@
     <% if Cook.active.size > 0 -%>
       <div id="active_cooks" class="alert">
         Active Cooks:
-        <%= Cook.active.collect{|cook| link_to cook.name, cook }.join(", ") %>
+        <%= Cook.active.collect{|cook| (cook.alarm? ? image_tag('alarm.gif') : "") + link_to(cook.name, cook)}.join(", ") %>
       </div>
     <% end -%>
     

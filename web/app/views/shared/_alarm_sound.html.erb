@@ -1,0 +1,9 @@
+<% unless alarm == "" or session[:mute_alarm] -%>
+  <embed hidden="true" autostart="true" loop="true" src="/sounds/<%= alarm %>.mp3">
+<% end -%>
+
+<% if session[:mute_alarm] -%>
+  <p style="float:right;"><%= link_to_remote("Un-Mute Alarm", :url => toggle_alarm_stokers_url) %></p>
+<% elsif !session[:mute_alarm] and alarm != "" -%>
+  <p style="float:right;"><%= link_to_remote("Mute Alarm", :url => toggle_alarm_stokers_url) %></p>
+<% end -%>
