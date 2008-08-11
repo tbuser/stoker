@@ -6,7 +6,7 @@
   <%= link_to image_tag("pencil.png") + " Edit", edit_cook_path(@cook) %> |
   <%= cook_status(@cook) %>
   <% if @cook.running? -%>
-    <%= link_to "Stop", stop_cook_path(@cook), :method => :put %>
+    <%= link_to "Stop", stop_cook_path(@cook), :method => :put, :confirm => "Are you sure?  This will reset all sensor alarms and targets to 0." %>
   <% end -%>
 </p>
 

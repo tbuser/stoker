@@ -53,6 +53,17 @@ class Cook < ActiveRecord::Base
       :order => "created_at"
     )
   end
+
+  def stop!
+    Cook.transaction do
+      self.sensors.each do |s|
+        s.reset!
+      end
+
+      self.end_time = Time.now
+      self.save!
+    end
+  end
   
   private
   

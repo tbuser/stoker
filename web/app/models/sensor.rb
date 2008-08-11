@@ -35,6 +35,7 @@ class Sensor < ActiveRecord::Base
 
           ["name", "target", "alarm", "high", "low", "blower_id"].each do |field|
             if self.changed.include?(field) or (field == "blower_id" and @update_blower)
+
               if field == "blower_id"
                 if @blower_id.to_s == ""
                   params[:blower_serial_number] = nil
@@ -46,7 +47,7 @@ class Sensor < ActiveRecord::Base
               end
             end
           end
-          
+
           self.stoker.net.sensor(self.serial_number).update_attributes(params)
         rescue Exception => e
           raise "#{e.message}\n#{e.backtrace.to_yaml}"
@@ -70,6 +71,20 @@ class Sensor < ActiveRecord::Base
     end
     
     alarm_status
+  end
+
+  def reset!
+    Sensor.transaction do
+      self.alarm  = "None"
+      self.target = 0
+      self.low    = 0
+      self.high   = 0
+      if self.blower
+        self.blower.sensor_id = nil
+        self.blower.save!
+      end
+      self.save!
+    end
   end
 
   private

@@ -95,14 +95,15 @@ class CooksController < ApplicationController
   end
 
   def stop
-    @cook.end_time = Time.now
-    
     respond_to do |format|
-      if @cook.save
+      begin
+        @cook.stop!
+        
         flash[:notice] = 'Cook has finished.'
         format.html { redirect_to(@cook) }
         format.xml { head :ok }
-      else
+      rescue Exception => e
+        @cook.errors.add_to_base(e.message)
         format.html { render :action => "edit" }
         format.xml { render :xml => @cook.errors, :status => :unprocessable_entity }
       end
