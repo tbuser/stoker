@@ -45,6 +45,12 @@ body {
   background-color: lightyellow;
 }
 
+#active_cooks {
+  border-top: 1px solid yellow;
+  border-bottom: 1px solid yellow;
+  background-color: lightyellow;
+}
+
 .flotr-legend{
 	border: 2px solid #B6D9FF;
 }
