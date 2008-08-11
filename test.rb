@@ -5,32 +5,41 @@ $TEST = false
 $TEST_HTML = File.open("tests/test1.html")
 
 require "lib/stoker"
+require "benchmark"
 
-stoker = Net::Stoker.new("10.1.1.8", :connection => "http")
+def get_sensors(connection="http")
+  stoker = Net::Stoker.new("10.1.1.8", :connection => connection)
 
-puts "Getting data..."
-stoker.get
+  # puts "Getting data..."
+  stoker.get
 
-# 530000112A584E30: Yellow
-# 440000112A621E30: Pit Temp
-# 0E0000112A5D1630: Blue
-# 9C00001195DEE430: Red
+  # 530000112A584E30: Yellow
+  # 440000112A621E30: Pit Temp
+  # 0E0000112A5D1630: Blue
+  # 9C00001195DEE430: Red
 
-# 140000002AA65105: Fan
+  # 140000002AA65105: Fan
 
-puts "Listing blowers:"
-stoker.blowers.each do |blower|
-  puts "#{blower.serial_number}, #{blower.name}, #{blower.sensor.name rescue ''}"
+  # puts "Listing blowers:"
+  # stoker.blowers.each do |blower|
+  #   puts "#{blower.serial_number}, #{blower.name}, #{blower.sensor.name rescue ''}"
+  # end
+  # 
+  # puts "Listing sensors:"
+  # stoker.sensors.each do |sensor|
+  #   puts "#{sensor.serial_number}, #{sensor.name}, #{sensor.temp}, #{sensor.target}, #{sensor.alarm}, #{sensor.low}, #{sensor.high}, #{sensor.blower.name rescue ''}"
+  # end
+  sleep 5
 end
 
-puts "Listing sensors:"
-stoker.sensors.each do |sensor|
-  puts "#{sensor.serial_number}, #{sensor.name}, #{sensor.temp}, #{sensor.target}, #{sensor.alarm}, #{sensor.low}, #{sensor.high}, #{sensor.blower.name rescue ''}"
+Benchmark.bm do |x|
+  x.report("http") { get_sensors("http"); }
+  x.report("socket") { get_sensors("socket"); }
 end
 
-sensor = stoker.sensor("530000112A584E30")
-res = sensor.update_attributes(:name => "Yellow Foo", :blower_serial_number => stoker.blower("140000002AA65105").serial_number)
-puts res.to_s
+#sensor = stoker.sensor("530000112A584E30")
+#res = sensor.update_attributes(:name => "Yellow Foo", :blower_serial_number => stoker.blower("140000002AA65105").serial_number)
+#puts res.to_s
 
 # name = sensor.name
 # serial_number = sensor.serial_number
@@ -106,3 +115,4 @@ puts res.to_s
 # stoker.monitor(:frequency => 60) do |event|
 #   puts "#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}: #{event.name} - #{event.temp}"
 # end
+
