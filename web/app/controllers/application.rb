@@ -4,7 +4,7 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
 
-  before_filter :authenticate, :except => [ :index, :show, :about ]
+  before_filter :authenticate, :except => [ :index, :show, :about, :toggle_alarm ]
   before_filter :adjust_format_for_iphone
   before_filter :check_background_processes
   
