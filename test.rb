@@ -29,11 +29,11 @@ def get_sensors(connection="http")
   # stoker.sensors.each do |sensor|
   #   puts "#{sensor.serial_number}, #{sensor.name}, #{sensor.temp}, #{sensor.target}, #{sensor.alarm}, #{sensor.low}, #{sensor.high}, #{sensor.blower.name rescue ''}"
   # end
-  sleep 5
 end
 
 Benchmark.bm do |x|
   x.report("http") { get_sensors("http"); }
+  sleep(3)
   x.report("socket") { get_sensors("socket"); }
 end
 

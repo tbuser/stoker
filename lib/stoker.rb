@@ -85,12 +85,26 @@ module Net
         
         # restart_bbq
 
-        warn "Connecting to #{@host} on port #{@port}"
-        @socket = Net::Telnet.new("Host" => @host, "Port" => @port, "Timeout" => @timeout, "Prompt" => /ok\:0/)
-        @socket.cmd("op=#{@output_port}") {|c| print c}
+        # warn "Connecting to #{@host} on port #{@port}"
+        @socket = Net::Telnet.new("Host" => @host, "Port" => @port, "Timeout" => @timeout, "Prompt" => /ok\:/)
+        # @socket.cmd("op=#{@output_port}") {|c| print c}
+        response = @socket.cmd("op=#{@output_port}")
         
-        warn "Connecting to #{@host} on port #{@output_port}"
-        @output_socket = Net::Telnet.new("Host" => @host, "Port" => @output_port, "Timeout" => @timeout)
+        # sleep(1)
+        
+        # warn "Connecting to #{@host} on port #{@output_port}"
+        tries = 0
+        until tries > 4
+          begin
+            @output_socket = Net::Telnet.new("Host" => @host, "Port" => @output_port, "Timeout" => @timeout)
+            break
+          rescue
+            tries += 1
+            # warn "trying again to connect to output socket"
+            raise "output port not responding" if tries == 4
+          end
+        end
+          
       end
     end
 
@@ -117,42 +131,83 @@ module Net
     end
 
     def get_socket
+      # warn "getting socket data"
+      
       @sensors      = []
       @blowers      = []
       @sensor_opts  = []
       @blower_opts  = []
 
-      response      = @socket.cmd("zx") {|c| print c}
+      # response      = @socket.cmd("zx") {|c| print c}
+      response      = @socket.cmd("zx")
       sensor_ids    = response[/^SensorID:(.*)BlowerID:.*$/, 1].split(/ /) rescue []
       blower_ids    = response[/BlowerID:(.*)$/, 1].split(/ /) rescue []
 
-      blower_ids.each do |i|
-        response = @socket.cmd("ge#{i}") {|c| print c}
-        response =~ /^Name:(.*) Sensor:(.*)$/
-        @blower_opts << {
-          :serial_number  => i,
-          :name           => $1.strip
-        }
+      ids           = sensor_ids + blower_ids
+      get_str       = ids.collect{|id| "ge#{id}"}.join("&")
+      
+      # response    = @socket.cmd(get_str) {|c| print c}
+      response    = @socket.cmd(get_str)
+      name_lines  = response.scan(/^(Name:.*)$/).join("\n").collect{|line| line.chomp}
+
+      if blower_ids.size > 0
+        count = 0
+        name_lines[(sensor_ids.size)..-1].each do |line|
+          line =~ /^Name:(.*) Sensor:(.*)$/
+          @blower_opts << {
+            :serial_number  => blower_ids[count],
+            :name           => $1.strip
+          }
+          count += 1
+        end
+      end
+
+      if sensor_ids.size > 0
+        count = 0
+        name_lines[0..(sensor_ids.size-1)].each do |line|
+          line =~ /^Name:(.*) Blower:(.*) Alarm Mode:(.*) Alarm Hi:(.*) Alarm Lo:(.*) Target:(.*)$/
+          blower_serial_number = $2 == "null" ? nil : @blower_opts.find{|bo| bo[:name] == $2.strip}[:serial_number]
+          @sensor_opts << {
+            :serial_number        => sensor_ids[count],
+            :name                 => $1.strip,
+            :blower_serial_number => blower_serial_number,
+            :alarm                => $3,
+            :high                 => $4.to_f.to_fahrenheit,
+            :low                  => $5.to_f.to_fahrenheit,
+            :target               => $6.to_f.to_fahrenheit
+          }
+          count += 1
+        end
       end
       
-      sensor_ids.each do |i|
-        response = @socket.cmd("ge#{i}") {|c| print c}
-        response =~ /^Name:(.*) Blower:(.*) Alarm Mode:(.*) Alarm Hi:(.*) Alarm Lo:(.*) Target:(.*)$/
-        blower_serial_number = $2 == "null" ? nil : @blower_opts.find{|bo| bo[:name] == $2.strip}[:serial_number]
-        @sensor_opts << {
-          :serial_number        => i,
-          :name                 => $1.strip,
-          :blower_serial_number => blower_serial_number,
-          :alarm                => $3,
-          :high                 => $4.to_f.to_fahrenheit,
-          :low                  => $5.to_f.to_fahrenheit,
-          :target               => $6.to_f.to_fahrenheit
-        }
-      end
+      # blower_ids.each do |i|
+      #   warn "sending ge#{i}"
+      #   response = @socket.cmd("ge#{i}") {|c| print c}
+      #   response =~ /^Name:(.*) Sensor:(.*)$/
+      #   @blower_opts << {
+      #     :serial_number  => i,
+      #     :name           => $1.strip
+      #   }
+      # end
+      # 
+      # sensor_ids.each do |i|
+      #   warn "sending ge#{i}"
+      #   response = @socket.cmd("ge#{i}") {|c| print c}
+      #   response =~ /^Name:(.*) Blower:(.*) Alarm Mode:(.*) Alarm Hi:(.*) Alarm Lo:(.*) Target:(.*)$/
+      #   blower_serial_number = $2 == "null" ? nil : @blower_opts.find{|bo| bo[:name] == $2.strip}[:serial_number]
+      #   @sensor_opts << {
+      #     :serial_number        => i,
+      #     :name                 => $1.strip,
+      #     :blower_serial_number => blower_serial_number,
+      #     :alarm                => $3,
+      #     :high                 => $4.to_f.to_fahrenheit,
+      #     :low                  => $5.to_f.to_fahrenheit,
+      #     :target               => $6.to_f.to_fahrenheit
+      #   }
+      # end
 
       @sensor_opts.size.times do
         line = @output_socket.readline
-        # puts line
         parts = line.split(" ", 11)
         parts[0] = parts[0].chop
         @sensor_opts.find{|so| so[:serial_number] == parts[0]}[:temp] = parts[8].to_f.to_fahrenheit
@@ -168,7 +223,7 @@ module Net
     end
   
     def get_http(attempt = 1)
-      warn "Requesting http://#{@host}:#{@port}"
+      # warn "Requesting http://#{@host}:#{@port}"
 
       @sensors    = []
       @blowers    = []
